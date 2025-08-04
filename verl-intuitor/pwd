@@ -1,0 +1,4 @@
+python model_merger.py --local_dir <定位到actor>
+bash sh/eval.sh <定位到huggingface>
+
+/hkfs/work/workspace/scratch/hgf_teb8892-zt_space/checkpoints/verl/math_grpo/global_step_10/actor

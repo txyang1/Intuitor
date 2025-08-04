@@ -269,7 +269,7 @@ trainer:
   n_gpus_per_node: 8
 
   # Save frequency (by iteration) for model checkpoints
-  save_freq: -1
+  save_freq: 10
 
   # ESI refers to the elastic server instance used during training, similar to the training plan. For example,
   # if you purchase 10 hours of computing power, the ESI will automatically shut down after 10 hours of training.
@@ -306,7 +306,7 @@ trainer:
   del_local_ckpt_after_load: False
 
   # Default local directory for saving checkpoints
-  default_local_dir: /hkfs/work/workspace/scratch/hgf_sap9939-myspace/checkpoints/${trainer.project_name}/${trainer.experiment_name}
+  default_local_dir: /hkfs/work/workspace/scratch/hgf_teb8892-zt_space/checkpoints/${trainer.project_name}/${trainer.experiment_name}
 
   # Maximum number of actor checkpoints to keep
   max_actor_ckpt_to_keep: null

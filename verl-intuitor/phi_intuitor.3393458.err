@@ -1,0 +1,3555 @@
++ source /home/hk-project-p0022560/hgf_teb8892/.bashrc
+++ '[' -f /etc/bashrc ']'
+++ . /etc/bashrc
++++ '[' -z '' ']'
++++ BASHRCSOURCED=Y
++++ '[' '' ']'
++++ shopt -q login_shell
+++++ umask
++++ '[' 0022 -eq 0 ']'
++++ SHELL=/bin/bash
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/00-modulepath.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/00-modulepath.sh
+++++ '[' -z /software/all/lmod/modulefiles/MPI/intel/2025.1_llvm/openmpi/5.0:/software/all/lmod/modulefiles/Compiler/intel/2025.1_llvm:/software/all/lmod/modulefiles/Core:/software/community/ICON/modulefiles ']'
+++++ :
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/bash_completion.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/bash_completion.sh
+++++ '[' 'x5.1.8(1)-release' '!=' x -a x '!=' x -a x = x ']'
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/colorgrep.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/colorgrep.sh
+++++ /usr/libexec/grepconf.sh -c
+++++ alias 'grep=grep --color=auto'
+++++ alias 'egrep=egrep --color=auto'
+++++ alias 'fgrep=fgrep --color=auto'
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/colorls.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/colorls.sh
+++++ '[' '!' -t 0 ']'
+++++ return
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/colorxzgrep.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/colorxzgrep.sh
+++++ /usr/libexec/grepconf.sh -c
+++++ alias 'xzgrep=xzgrep --color=auto'
+++++ alias 'xzegrep=xzegrep --color=auto'
+++++ alias 'xzfgrep=xzfgrep --color=auto'
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/colorzgrep.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/colorzgrep.sh
+++++ '[' -f /usr/libexec/grepconf.sh ']'
+++++ /usr/libexec/grepconf.sh -c
+++++ alias 'zgrep=zgrep --color=auto'
+++++ alias 'zfgrep=zfgrep --color=auto'
+++++ alias 'zegrep=zegrep --color=auto'
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/debuginfod.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/debuginfod.sh
+++++ '[' -z '' ']'
+++++ prefix=/usr
++++++ cat /dev/null '/etc/debuginfod/*.urls'
++++++ tr '\n' ' '
+++++ DEBUGINFOD_URLS=
+++++ '[' -n '' ']'
+++++ unset DEBUGINFOD_URLS
+++++ unset prefix
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/flatpak.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/flatpak.sh
+++++ command -v flatpak
++++++ unset G_MESSAGES_DEBUG
++++++ echo /home/hk-project-p0022560/hgf_teb8892/.local/share/flatpak
++++++ new_dirs=
++++++ GIO_USE_VFS=local
++++++ flatpak --installations
++++++ read -r install_path
++++++ share_path=/home/hk-project-p0022560/hgf_teb8892/.local/share/flatpak/exports/share
++++++ case ":$XDG_DATA_DIRS:" in
++++++ :
++++++ read -r install_path
++++++ share_path=/var/lib/flatpak/exports/share
++++++ case ":$XDG_DATA_DIRS:" in
++++++ :
++++++ read -r install_path
++++++ echo ''
+++++ new_dirs=
+++++ export XDG_DATA_DIRS
+++++ XDG_DATA_DIRS=/home/hk-project-p0022560/hgf_teb8892/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share:/usr/share
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/gawk.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/gawk.sh
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/lang.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/lang.sh
+++++ unset LANG_backup
++++++ /usr/bin/locale
+++++ '[' -n '' ']'
+++++ LANG_backup=en_US.UTF-8
+++++ for config in /etc/locale.conf "${HOME}/.i18n"
+++++ '[' -f /etc/locale.conf ']'
+++++ '[' -x /usr/bin/sed ']'
++++++ /usr/bin/sed -r -e 's/^[[:blank:]]*([[:upper:]_]+)=([[:print:][:digit:]\._-]+|"[[:print:][:digit:]\._-]+")/export \1=\2/;t;d' /etc/locale.conf
+++++ eval export 'LANG="en_US.UTF-8"'
++++++ export LANG=en_US.UTF-8
++++++ LANG=en_US.UTF-8
+++++ for config in /etc/locale.conf "${HOME}/.i18n"
+++++ '[' -f /home/hk-project-p0022560/hgf_teb8892/.i18n ']'
+++++ '[' -n en_US.UTF-8 ']'
+++++ LANG=en_US.UTF-8
+++++ unset LANG_backup config
+++++ '[' -n '' ']'
+++++ '[' -n en_US.UTF-8 ']'
+++++ '[' xterm-256color = linux ']'
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/less.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/less.sh
+++++ '[' -z '||/usr/bin/lesspipe.sh %s' ']'
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/mc.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/mc.sh
+++++ '[' -n '5.1.8(1)-release' ']'
+++++ alias 'mc=. /usr/libexec/mc/mc-wrapper.sh'
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/modules.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/modules.sh
+++++ '[' -n /bin/bash ']'
+++++ '[' bash = sh ']'
+++++ shell=bash
+++++ '[' -f /usr/share/Modules/init/bash ']'
+++++ . /usr/share/Modules/init/bash
++++++ unset _mlshdbg
++++++ '[' 0 = 1 ']'
++++++ export 'MODULES_RUN_QUARANTINE=LD_LIBRARY_PATH LD_PRELOAD'
++++++ MODULES_RUN_QUARANTINE='LD_LIBRARY_PATH LD_PRELOAD'
++++++ unset _mlre _mlIFS
++++++ '[' -n x ']'
++++++ _mlIFS=' 	
+'
++++++ IFS=' '
++++++ for _mlv in ${MODULES_RUN_QUARANTINE:-}
++++++ '[' LD_LIBRARY_PATH = LD_LIBRARY_PATH ']'
++++++ '[' LD_LIBRARY_PATH = LD_LIBRARY_PATH ']'
+++++++ eval 'echo ${LD_LIBRARY_PATH+x}'
++++++++ echo x
++++++ '[' -n x ']'
+++++++ eval 'echo ${LD_LIBRARY_PATH}'
++++++++ echo /software/all/devel/cuda/12.4/lib64:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/lib:/software/all/toolkit/Intel_OneAPI/mkl/2025.1/lib/intel64:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/lib
++++++ _mlre='__MODULES_QUAR_LD_LIBRARY_PATH='\''/software/all/devel/cuda/12.4/lib64:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/lib:/software/all/toolkit/Intel_OneAPI/mkl/2025.1/lib/intel64:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/lib'\'' '
++++++ _mlrv=MODULES_RUNENV_LD_LIBRARY_PATH
+++++++ eval 'echo ${MODULES_RUNENV_LD_LIBRARY_PATH:-}'
++++++++ echo
++++++ _mlre='__MODULES_QUAR_LD_LIBRARY_PATH='\''/software/all/devel/cuda/12.4/lib64:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/lib:/software/all/toolkit/Intel_OneAPI/mkl/2025.1/lib/intel64:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/lib'\'' LD_LIBRARY_PATH='\'''\'' '
++++++ for _mlv in ${MODULES_RUN_QUARANTINE:-}
++++++ '[' LD_PRELOAD = LD_PRELOAD ']'
++++++ '[' LD_PRELOAD = LD_PRELOAD ']'
+++++++ eval 'echo ${LD_PRELOAD+x}'
++++++++ echo
++++++ '[' -n '' ']'
++++++ _mlrv=MODULES_RUNENV_LD_PRELOAD
+++++++ eval 'echo ${MODULES_RUNENV_LD_PRELOAD:-}'
++++++++ echo
++++++ _mlre='__MODULES_QUAR_LD_LIBRARY_PATH='\''/software/all/devel/cuda/12.4/lib64:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/lib:/software/all/toolkit/Intel_OneAPI/mkl/2025.1/lib/intel64:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/lib'\'' LD_LIBRARY_PATH='\'''\'' LD_PRELOAD='\'''\'' '
++++++ '[' -n '__MODULES_QUAR_LD_LIBRARY_PATH='\''/software/all/devel/cuda/12.4/lib64:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/lib:/software/all/toolkit/Intel_OneAPI/mkl/2025.1/lib/intel64:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/lib'\'' LD_LIBRARY_PATH='\'''\'' LD_PRELOAD='\'''\'' ' ']'
++++++ _mlre='eval __MODULES_QUAR_LD_LIBRARY_PATH='\''/software/all/devel/cuda/12.4/lib64:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/lib:/software/all/toolkit/Intel_OneAPI/mkl/2025.1/lib/intel64:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/lib'\'' LD_LIBRARY_PATH='\'''\'' LD_PRELOAD='\'''\'' __MODULES_QUARANTINE_SET=1 '
+++++++ eval '__MODULES_QUAR_LD_LIBRARY_PATH='\''/software/all/devel/cuda/12.4/lib64:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/lib:/software/all/toolkit/Intel_OneAPI/mkl/2025.1/lib/intel64:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/lib'\''' 'LD_LIBRARY_PATH='\'''\''' 'LD_PRELOAD='\'''\''' __MODULES_QUARANTINE_SET=1 /usr/bin/tclsh /usr/share/Modules/libexec/modulecmd.tcl bash autoinit
++++++++ __MODULES_QUAR_LD_LIBRARY_PATH=/software/all/devel/cuda/12.4/lib64:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/lib:/software/all/toolkit/Intel_OneAPI/mkl/2025.1/lib/intel64:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/lib
++++++++ LD_LIBRARY_PATH=
++++++++ LD_PRELOAD=
++++++++ __MODULES_QUARANTINE_SET=1
++++++++ /usr/bin/tclsh /usr/share/Modules/libexec/modulecmd.tcl bash autoinit
++++++ eval '_module_raw() {
+   eval "$(/usr/bin/tclsh '\''/usr/share/Modules/libexec/modulecmd.tcl'\'' bash "$@")";
+   _mlstatus=$?;
+   return $_mlstatus;
+};
+module() {
+   local _mlredir=0;
+   if [ -n "${MODULES_REDIRECT_OUTPUT+x}" ]; then
+      if [ "$MODULES_REDIRECT_OUTPUT" = '\''0'\'' ]; then
+         _mlredir=0;
+      elif [ "$MODULES_REDIRECT_OUTPUT" = '\''1'\'' ]; then
+         _mlredir=1;
+      fi;
+   fi;
+   case " $@ " in
+      *'\'' --no-redirect '\''*) _mlredir=0 ;;
+      *'\'' --redirect '\''*) _mlredir=1 ;;
+   esac;
+   if [ $_mlredir -eq 0 ]; then
+      _module_raw "$@";
+   else
+      _module_raw "$@" 2>&1;
+   fi;
+};
+export -f _module_raw;
+export -f module;
+ml() { module ml "$@"; };
+export -f ml;
+MODULES_CMD=/usr/share/Modules/libexec/modulecmd.tcl; export MODULES_CMD;
+unset __MODULES_AUTOINIT_INPROGRESS;
+MODULESHOME=/usr/share/lmod/lmod; export MODULESHOME;
+test 0;'
+++++++ export -f _module_raw
+++++++ export -f module
+++++++ export -f ml
+++++++ MODULES_CMD=/usr/share/Modules/libexec/modulecmd.tcl
+++++++ export MODULES_CMD
+++++++ unset __MODULES_AUTOINIT_INPROGRESS
+++++++ MODULESHOME=/usr/share/lmod/lmod
+++++++ export MODULESHOME
+++++++ test 0
++++++ '[' -n x ']'
++++++ IFS=' 	
+'
++++++ unset _mlIFS
++++++ unset _mlre _mlv _mlrv
++++++ '[' -n '' ']'
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/PackageKit.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/PackageKit.sh
+++++ [[ -n '' ]]
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/scl-init.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/scl-init.sh
+++++++ /bin/ps -p 2263466 -ocomm=
++++++ /bin/basename slurm_script
+++++ shell=slurm_script
+++++ '[' slurm_script = bash ']'
+++++ MODULESHOME=/usr/share/Modules
+++++ export MODULESHOME
+++++ '[' /software/all/lmod/modulefiles/MPI/intel/2025.1_llvm/openmpi/5.0:/software/all/lmod/modulefiles/Compiler/intel/2025.1_llvm:/software/all/lmod/modulefiles/Core:/software/community/ICON/modulefiles = '' ']'
+++++ MODULEPATH=/etc/scl/modulefiles:/software/all/lmod/modulefiles/MPI/intel/2025.1_llvm/openmpi/5.0:/software/all/lmod/modulefiles/Compiler/intel/2025.1_llvm:/software/all/lmod/modulefiles/Core:/software/community/ICON/modulefiles
+++++ export MODULEPATH
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/vte.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/vte.sh
+++++ '[' -n '5.1.8(1)-release' -o -n '' ']'
+++++ [[ hxB == *i* ]]
+++++ return 0
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/which2.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/which2.sh
+++++ case "$(basename $(readlink /proc/$$/exe))" in
+++++++ readlink /proc/2263466/exe
++++++ basename /usr/bin/bash
+++++ which_declare='declare -f'
+++++ which_opt=-f
+++++ export which_declare
+++++ export -f which
++++ for i in /etc/profile.d/*.sh
++++ '[' -r /etc/profile.d/zzz_profile.local.sh ']'
++++ '[' '' ']'
++++ . /etc/profile.d/zzz_profile.local.sh
+++++ '[' -n '' ']'
+++++ egrep -q '^hgf_teb8892:' /etc/passwd
+++++ '[' -z /bin/bash ']'
++++++ source /usr/sbin/cluster_config_functions.sh
+++++++ declare -r MC_CONFIGFILE=/etc/cluster_config/multi_config.xml
+++++++ declare -r CONFIGFILE=/etc/cluster_config/config.xml
+++++++ XML=/usr/bin/xml
+++++++ '[' -x /usr/bin/xmlstarlet ']'
+++++++ XML=/usr/bin/xmlstarlet
+++++++ DEBUG=no
+++++++ create_mc_function check_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_check_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   check_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_addconsole_nodes() {    get_XXX_nodes "$@" "addconsole"; }'
+++++++ eval 'function mc_get_addconsole_nodes() { mc_get_XXX_nodes      "addconsole"; }'
+++++++ eval 'function    set_addconsole_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "addconsole" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_all_nodes() {    get_XXX_nodes "$@" "all"; }'
+++++++ eval 'function mc_get_all_nodes() { mc_get_XXX_nodes      "all"; }'
+++++++ eval 'function    set_all_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "all" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_ci_controller_nodes() {    get_XXX_nodes "$@" "ci_controller"; }'
+++++++ eval 'function mc_get_ci_controller_nodes() { mc_get_XXX_nodes      "ci_controller"; }'
+++++++ eval 'function    set_ci_controller_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "ci_controller" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_compute_nodes() {    get_XXX_nodes "$@" "compute"; }'
+++++++ eval 'function mc_get_compute_nodes() { mc_get_XXX_nodes      "compute"; }'
+++++++ eval 'function    set_compute_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "compute" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_fail2ban_nodes() {    get_XXX_nodes "$@" "fail2ban"; }'
+++++++ eval 'function mc_get_fail2ban_nodes() { mc_get_XXX_nodes      "fail2ban"; }'
+++++++ eval 'function    set_fail2ban_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "fail2ban" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_gpfs_nodes() {    get_XXX_nodes "$@" "gpfs"; }'
+++++++ eval 'function mc_get_gpfs_nodes() { mc_get_XXX_nodes      "gpfs"; }'
+++++++ eval 'function    set_gpfs_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "gpfs" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_head_nodes() {    get_XXX_nodes "$@" "head"; }'
+++++++ eval 'function mc_get_head_nodes() { mc_get_XXX_nodes      "head"; }'
+++++++ eval 'function    set_head_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "head" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_jupyterhub_nodes() {    get_XXX_nodes "$@" "jupyterhub"; }'
+++++++ eval 'function mc_get_jupyterhub_nodes() { mc_get_XXX_nodes      "jupyterhub"; }'
+++++++ eval 'function    set_jupyterhub_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "jupyterhub" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_login_nodes() {    get_XXX_nodes "$@" "login"; }'
+++++++ eval 'function mc_get_login_nodes() { mc_get_XXX_nodes      "login"; }'
+++++++ eval 'function    set_login_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "login" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_monitor_nodes() {    get_XXX_nodes "$@" "monitor"; }'
+++++++ eval 'function mc_get_monitor_nodes() { mc_get_XXX_nodes      "monitor"; }'
+++++++ eval 'function    set_monitor_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "monitor" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_ntpserver_nodes() {    get_XXX_nodes "$@" "ntpserver"; }'
+++++++ eval 'function mc_get_ntpserver_nodes() { mc_get_XXX_nodes      "ntpserver"; }'
+++++++ eval 'function    set_ntpserver_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "ntpserver" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_pbs_client_nodes() {    get_XXX_nodes "$@" "pbs_client"; }'
+++++++ eval 'function mc_get_pbs_client_nodes() { mc_get_XXX_nodes      "pbs_client"; }'
+++++++ eval 'function    set_pbs_client_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "pbs_client" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_pbs_server_nodes() {    get_XXX_nodes "$@" "pbs_server"; }'
+++++++ eval 'function mc_get_pbs_server_nodes() { mc_get_XXX_nodes      "pbs_server"; }'
+++++++ eval 'function    set_pbs_server_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "pbs_server" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_resource_manager_nodes() {    get_XXX_nodes "$@" "resource_manager"; }'
+++++++ eval 'function mc_get_resource_manager_nodes() { mc_get_XXX_nodes      "resource_manager"; }'
+++++++ eval 'function    set_resource_manager_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "resource_manager" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_sdil_nodes() {    get_XXX_nodes "$@" "sdil"; }'
+++++++ eval 'function mc_get_sdil_nodes() { mc_get_XXX_nodes      "sdil"; }'
+++++++ eval 'function    set_sdil_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "sdil" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_slurmssh_nodes() {    get_XXX_nodes "$@" "slurmssh"; }'
+++++++ eval 'function mc_get_slurmssh_nodes() { mc_get_XXX_nodes      "slurmssh"; }'
+++++++ eval 'function    set_slurmssh_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "slurmssh" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_syslogserver_nodes() {    get_XXX_nodes "$@" "syslogserver"; }'
+++++++ eval 'function mc_get_syslogserver_nodes() { mc_get_XXX_nodes      "syslogserver"; }'
+++++++ eval 'function    set_syslogserver_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "syslogserver" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_tsmserver_nodes() {    get_XXX_nodes "$@" "tsmserver"; }'
+++++++ eval 'function mc_get_tsmserver_nodes() { mc_get_XXX_nodes      "tsmserver"; }'
+++++++ eval 'function    set_tsmserver_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "tsmserver" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_vmbridge_compute_nodes() {    get_XXX_nodes "$@" "vmbridge_compute"; }'
+++++++ eval 'function mc_get_vmbridge_compute_nodes() { mc_get_XXX_nodes      "vmbridge_compute"; }'
+++++++ eval 'function    set_vmbridge_compute_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "vmbridge_compute" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_vmbridge_server_nodes() {    get_XXX_nodes "$@" "vmbridge_server"; }'
+++++++ eval 'function mc_get_vmbridge_server_nodes() { mc_get_XXX_nodes      "vmbridge_server"; }'
+++++++ eval 'function    set_vmbridge_server_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "vmbridge_server" "$@";
+		 }'
+++++++ create_mc_function get_cluster_name
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_cluster_name() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_cluster_name "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_system_mail_recipient
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_system_mail_recipient() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_system_mail_recipient "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_mail_origin
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_mail_origin() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_mail_origin "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_external_ntpserver
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_external_ntpserver() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_external_ntpserver "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_additional_net_interface_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_additional_net_interface_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_additional_net_interface_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_external_gateway_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_external_gateway_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_external_gateway_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_additional_gateway_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_additional_gateway_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_additional_gateway_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_nat_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_nat_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_nat_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_natserver_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_natserver_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_natserver_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_natclients_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_natclients_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_natclients_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_all_nodes_except_headnodes_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_all_nodes_except_headnodes_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_all_nodes_except_headnodes_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_syslogclient_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_syslogclient_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_syslogclient_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ldap_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ldap_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ldap_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function remove_ldap_bindpw
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_remove_ldap_bindpw() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   remove_ldap_bindpw "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_linux_cmdline_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_linux_cmdline_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_linux_cmdline_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_file_permissions_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_file_permissions_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_file_permissions_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_file_acl_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_file_acl_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_file_acl_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ulimits_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ulimits_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ulimits_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_remote_filesystem_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_remote_filesystem_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_remote_filesystem_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_swappiness_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_swappiness_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_swappiness_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_opensm_ha_groups
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_opensm_ha_groups() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_opensm_ha_groups "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_opensm_prio_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_opensm_prio_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_opensm_prio_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_opensm_routing_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_opensm_routing_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_opensm_routing_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_tsm_home
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_tsm_home() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_tsm_home "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_tsm_owner
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_tsm_owner() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_tsm_owner "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_tsm_node_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_tsm_node_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_tsm_node_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ip_range_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ip_range_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ip_range_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipv6_range_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipv6_range_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipv6_range_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipv6_eui_range_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipv6_eui_range_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipv6_eui_range_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipv6_link_range_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipv6_link_range_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipv6_link_range_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipmi_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipmi_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipmi_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipmi_module_names
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipmi_module_names() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipmi_module_names "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_switch_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_switch_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_switch_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_switch_names
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_switch_names() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_switch_names "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_mac_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_mac_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_mac_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_guid_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_guid_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_guid_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_bios_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_bios_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_bios_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_cpu_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_cpu_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_cpu_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_memory_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_memory_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_memory_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_installed_disk_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_installed_disk_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_installed_disk_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_md_device_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_md_device_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_md_device_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_interconnect_device_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_interconnect_device_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_interconnect_device_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ethernet_speed_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ethernet_speed_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ethernet_speed_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_gpu_device_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_gpu_device_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_gpu_device_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_localfs_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_localfs_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_localfs_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_kernel_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_kernel_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_kernel_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_system_user_uid_limit
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_system_user_uid_limit() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_system_user_uid_limit "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipmi_main_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipmi_main_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipmi_main_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipmi_sub_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipmi_sub_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipmi_sub_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
++++++ get_cluster_name
++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
++++++ [[ 0 -ne 0 ]]
++++++ local CLUSTER_NAME
+++++++ cat_xml_with_xinclude /etc/cluster_config/config.xml
+++++++ [[ 1 -eq 0 ]]
+++++++ xmllint --xinclude --xmlout /etc/cluster_config/config.xml
+++++++ /usr/bin/xmlstarlet sel --template --value-of /config/cluster_name
++++++ CLUSTER_NAME=hk
++++++ [[ -n hk ]]
++++++ echo hk
++++++ return 0
+++++ export CLUSTER=hk
+++++ CLUSTER=hk
+++++ debug_echo 'CLUSTER="hk"'
+++++ [[ -n '' ]]
+++++ DIRECTORY=/etc/profile.d/KITE
+++++ REST=/hk-project-p0022560/hgf_teb8892/
+++++ [[ -n /hk-project-p0022560/hgf_teb8892/ ]]
+++++ DIRECTORY+=/
+++++ REST=hk-project-p0022560/hgf_teb8892/
+++++ [[ ! -d /etc/profile.d/KITE/ ]]
+++++ for SCRIPT in "${DIRECTORY}"*.sh
+++++ [[ -r /etc/profile.d/KITE/bash_settings.sh ]]
+++++ debug_echo 'Sourcing "/etc/profile.d/KITE/bash_settings.sh".'
+++++ [[ -n '' ]]
+++++ source /etc/profile.d/KITE/bash_settings.sh
++++++ declare -x 'HISTTIMEFORMAT=%F %T '
++++++ unset HISTCONTROL
++++++ shopt -s histappend
+++++ for SCRIPT in "${DIRECTORY}"*.sh
+++++ [[ -r /etc/profile.d/KITE/data_dirs.sh ]]
+++++ debug_echo 'Sourcing "/etc/profile.d/KITE/data_dirs.sh".'
+++++ [[ -n '' ]]
+++++ source /etc/profile.d/KITE/data_dirs.sh
++++++ case "${CLUSTER}" in
++++++ [[ -n '' ]]
+++++++ id --group --name
++++++ export PROJECT_GROUP=hk-project-p0022560
++++++ PROJECT_GROUP=hk-project-p0022560
++++++ case "${CLUSTER}" in
++++++ PROJECT_PATH=/home/hk-project-p0022560/hgf_teb8892
++++++ [[ -d /home/hk-project-p0022560/hgf_teb8892 ]]
++++++ export PROJECT=/home/hk-project-p0022560/hgf_teb8892
++++++ PROJECT=/home/hk-project-p0022560/hgf_teb8892
+++++++ sed 's@^/home/@/hkproject/@'
++++++ export HKPROJECT=/hkproject/hk-project-p0022560/hgf_teb8892
++++++ HKPROJECT=/hkproject/hk-project-p0022560/hgf_teb8892
++++++ case "${CLUSTER}" in
++++++ export LSDF=/lsdf
++++++ LSDF=/lsdf
+++++++ echo hgf_teb8892
+++++++ cut -f2 -d _
++++++ LSDF_USER=teb8892
+++++++ ls -al '/var/local/lsdfos/kit/*'
+++++++ grep teb8892
+++++++ cut -f 8 -d /
+++++++ awk '{print $11}'
++++++ KIT_GRP=
++++++ [[ -n '' ]]
+++++ for SCRIPT in "${DIRECTORY}"*.sh
+++++ [[ -r /etc/profile.d/KITE/datasets.sh ]]
+++++ debug_echo 'Sourcing "/etc/profile.d/KITE/datasets.sh".'
+++++ [[ -n '' ]]
+++++ source /etc/profile.d/KITE/datasets.sh
++++++ case "${CLUSTER}" in
++++++ DATASETS_PATH=/hkfs/home/dataset/datasets
++++++ export DATASETS=/hkfs/home/dataset/datasets
++++++ DATASETS=/hkfs/home/dataset/datasets
+++++ for SCRIPT in "${DIRECTORY}"*.sh
+++++ [[ -r /etc/profile.d/KITE/lmod.sh ]]
+++++ debug_echo 'Sourcing "/etc/profile.d/KITE/lmod.sh".'
+++++ [[ -n '' ]]
+++++ source /etc/profile.d/KITE/lmod.sh
++++++ case "${CLUSTER}" in
++++++ export LMOD_PAGER=less
++++++ LMOD_PAGER=less
++++++ export LMOD_SITE_NAME=KIT
++++++ LMOD_SITE_NAME=KIT
++++++ export LMOD_SYSTEM_NAME=hk
++++++ LMOD_SYSTEM_NAME=hk
++++++ '[' -f /opt/lmod/lmod/init/profile ']'
++++++ '[' -f /usr/share/lmod/lmod/init/profile ']'
++++++ source /usr/share/lmod/lmod/init/profile
+++++++ . /etc/profile.d/00-modulepath.sh
++++++++ '[' -z /etc/scl/modulefiles:/software/all/lmod/modulefiles/MPI/intel/2025.1_llvm/openmpi/5.0:/software/all/lmod/modulefiles/Compiler/intel/2025.1_llvm:/software/all/lmod/modulefiles/Core:/software/community/ICON/modulefiles ']'
++++++++ :
+++++++ '[' -z '' ']'
+++++++ LMOD_ALLOW_ROOT_USE=yes
+++++++ '[' -n '' ']'
+++++++ '[' yes '!=' yes ']'
+++++++ '[' -z /usr/share/modulefiles ']'
+++++++ findExec READLINK_CMD /usr/bin/readlink readlink
+++++++ Nm=READLINK_CMD
+++++++ confPath=/usr/bin/readlink
+++++++ execNm=readlink
+++++++ eval READLINK_CMD=/usr/bin/readlink
++++++++ READLINK_CMD=/usr/bin/readlink
+++++++ '[' '!' -x /usr/bin/readlink ']'
+++++++ unset Nm confPath execNm
+++++++ findExec PS_CMD /usr/bin/ps ps
+++++++ Nm=PS_CMD
+++++++ confPath=/usr/bin/ps
+++++++ execNm=ps
+++++++ eval PS_CMD=/usr/bin/ps
++++++++ PS_CMD=/usr/bin/ps
+++++++ '[' '!' -x /usr/bin/ps ']'
+++++++ unset Nm confPath execNm
+++++++ findExec EXPR_CMD /usr/bin/expr expr
+++++++ Nm=EXPR_CMD
+++++++ confPath=/usr/bin/expr
+++++++ execNm=expr
+++++++ eval EXPR_CMD=/usr/bin/expr
++++++++ EXPR_CMD=/usr/bin/expr
+++++++ '[' '!' -x /usr/bin/expr ']'
+++++++ unset Nm confPath execNm
+++++++ findExec BASENAME_CMD /usr/bin/basename basename
+++++++ Nm=BASENAME_CMD
+++++++ confPath=/usr/bin/basename
+++++++ execNm=basename
+++++++ eval BASENAME_CMD=/usr/bin/basename
++++++++ BASENAME_CMD=/usr/bin/basename
+++++++ '[' '!' -x /usr/bin/basename ']'
+++++++ unset Nm confPath execNm
+++++++ unset -f findExec
+++++++ '[' -f /proc/2263466/exe ']'
++++++++ /usr/bin/readlink /proc/2263466/exe
+++++++ my_shell=/usr/bin/bash
++++++++ /usr/bin/expr /usr/bin/bash : '-*\(.*\)'
+++++++ my_shell=/usr/bin/bash
++++++++ /usr/bin/basename /usr/bin/bash
+++++++ my_shell=bash
+++++++ case ${my_shell} in
+++++++ '[' -f /usr/share/lmod/lmod/init/bash ']'
+++++++ . /usr/share/lmod/lmod/init/bash
++++++++ '[' -z '' ']'
++++++++ case "$-" in
++++++++ __lmod_vx=x
++++++++ '[' -n x ']'
++++++++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for this output (/usr/share/lmod/lmod/init/bash)
+Shell debugging restarted
++++++++ unset __lmod_vx
+++++++ unset my_shell PS_CMD EXPR_CMD BASENAME_CMD MODULEPATH_INIT LMOD_ALLOW_ROOT_USE READLINK_CMD
++++++ export MODULEPATH=/software/all/lmod/modulefiles/Core
++++++ MODULEPATH=/software/all/lmod/modulefiles/Core
++++++ export 'LMOD_PACKAGE_PATH=/etc/lmod/?.lua;;'
++++++ LMOD_PACKAGE_PATH='/etc/lmod/?.lua;;'
++++++ export MODULEPATH=/software/all/lmod/modulefiles/Core:/software/community/ICON/modulefiles/
++++++ MODULEPATH=/software/all/lmod/modulefiles/Core:/software/community/ICON/modulefiles/
+++++++ id --groups --name
++++++ for group in $(id --groups --name)
++++++ [[ hk-project-p0022560 == \h\k\-\b\w\-\s\w ]]
++++++ [[ hk-project-p0022560 == \h\k\-\a\c\c\e\s\s\-\b\w ]]
++++++ [[ hk-project-p0022560 == \h\k\-\k\i\t\-\s\w ]]
++++++ [[ hk-project-p0022560 == \h\k\-\a\c\c\e\s\s\-\k\i\t ]]
++++++ for group in $(id --groups --name)
++++++ [[ hk-access-ext == \h\k\-\b\w\-\s\w ]]
++++++ [[ hk-access-ext == \h\k\-\a\c\c\e\s\s\-\b\w ]]
++++++ [[ hk-access-ext == \h\k\-\k\i\t\-\s\w ]]
++++++ [[ hk-access-ext == \h\k\-\a\c\c\e\s\s\-\k\i\t ]]
++++++ for group in $(id --groups --name)
++++++ [[ hgf == \h\k\-\b\w\-\s\w ]]
++++++ [[ hgf == \h\k\-\a\c\c\e\s\s\-\b\w ]]
++++++ [[ hgf == \h\k\-\k\i\t\-\s\w ]]
++++++ [[ hgf == \h\k\-\a\c\c\e\s\s\-\k\i\t ]]
++++++ [[ hk == \f\t\p\-\x\8\6 ]]
++++++ case "${CLUSTER}" in
++++++ export LMOD_SYSTEM_DEFAULT_MODULES=
++++++ LMOD_SYSTEM_DEFAULT_MODULES=
++++++ [[ hgf_teb8892 != \r\o\o\t ]]
++++++ LMOD_SYSTEM_DEFAULT_MODULES+=dot:
++++++ LMOD_SYSTEM_DEFAULT_MODULES+=compiler/intel:numlib/mkl:mpi/openmpi
++++++ [[ ! -n '' ]]
++++++ module --quiet restore system
++++++ '[' -z '' ']'
++++++ case "$-" in
++++++ __lmod_sh_dbg=x
++++++ '[' -n x ']'
++++++ set +x
+Shell debugging temporarily silenced: export LMOD_SH_DBG_ON=1 for Lmod's output
+Shell debugging restarted
++++++ unset __lmod_sh_dbg
++++++ return 0
+++++ for SCRIPT in "${DIRECTORY}"*.sh
+++++ [[ -r /etc/profile.d/KITE/modules_export.sh ]]
+++++ debug_echo 'Sourcing "/etc/profile.d/KITE/modules_export.sh".'
+++++ [[ -n '' ]]
+++++ source /etc/profile.d/KITE/modules_export.sh
++++++ [[ -n /usr/share/lmod/lmod ]]
++++++ [[ -n /bin/bash ]]
++++++ export -f module
+++++ for SCRIPT in "${DIRECTORY}"*.sh
+++++ [[ -r /etc/profile.d/KITE/modules.sh ]]
+++++ debug_echo 'Sourcing "/etc/profile.d/KITE/modules.sh".'
+++++ [[ -n '' ]]
+++++ source /etc/profile.d/KITE/modules.sh
++++++ case "${CLUSTER}" in
++++++ declare -F module
++++++ unset BASH_ENV
++++++ case "${CLUSTER}" in
++++++ :
++++++ case "${CLUSTER}" in
++++++ :
+++++ for SCRIPT in "${DIRECTORY}"*.sh
+++++ [[ -r /etc/profile.d/KITE/software_path.sh ]]
+++++ debug_echo 'Sourcing "/etc/profile.d/KITE/software_path.sh".'
+++++ [[ -n '' ]]
+++++ source /etc/profile.d/KITE/software_path.sh
++++++ export PATH=/software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:.
++++++ PATH=/software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:.
+++++ for SCRIPT in "${DIRECTORY}"*.sh
+++++ [[ -r /etc/profile.d/KITE/temp_dirs.sh ]]
+++++ debug_echo 'Sourcing "/etc/profile.d/KITE/temp_dirs.sh".'
+++++ [[ -n '' ]]
+++++ source /etc/profile.d/KITE/temp_dirs.sh
++++++ export SCRATCH=/scratch
++++++ SCRATCH=/scratch
++++++ export TEMP=/scratch
++++++ TEMP=/scratch
++++++ [[ -z /scratch/slurm_tmpdir/job_3393458 ]]
++++++ export TMP=/scratch/slurm_tmpdir/job_3393458
++++++ TMP=/scratch/slurm_tmpdir/job_3393458
+++++ for SCRIPT in "${DIRECTORY}"*.sh
+++++ [[ -r /etc/profile.d/KITE/ulimits.sh ]]
+++++ debug_echo 'Sourcing "/etc/profile.d/KITE/ulimits.sh".'
+++++ [[ -n '' ]]
+++++ source /etc/profile.d/KITE/ulimits.sh
+++++++ /usr/bin/hostname
++++++ HOSTNAME=hkn0423.localdomain
++++++ export HOSTNAME
++++++ [[ ! -e /usr/sbin/cluster_config_functions.sh ]]
++++++ source /usr/sbin/cluster_config_functions.sh
+++++++ declare -r MC_CONFIGFILE=/etc/cluster_config/multi_config.xml
+++++++ declare -r CONFIGFILE=/etc/cluster_config/config.xml
+++++++ XML=/usr/bin/xml
+++++++ '[' -x /usr/bin/xmlstarlet ']'
+++++++ XML=/usr/bin/xmlstarlet
+++++++ DEBUG=no
+++++++ create_mc_function check_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_check_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   check_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_addconsole_nodes() {    get_XXX_nodes "$@" "addconsole"; }'
+++++++ eval 'function mc_get_addconsole_nodes() { mc_get_XXX_nodes      "addconsole"; }'
+++++++ eval 'function    set_addconsole_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "addconsole" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_all_nodes() {    get_XXX_nodes "$@" "all"; }'
+++++++ eval 'function mc_get_all_nodes() { mc_get_XXX_nodes      "all"; }'
+++++++ eval 'function    set_all_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "all" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_ci_controller_nodes() {    get_XXX_nodes "$@" "ci_controller"; }'
+++++++ eval 'function mc_get_ci_controller_nodes() { mc_get_XXX_nodes      "ci_controller"; }'
+++++++ eval 'function    set_ci_controller_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "ci_controller" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_compute_nodes() {    get_XXX_nodes "$@" "compute"; }'
+++++++ eval 'function mc_get_compute_nodes() { mc_get_XXX_nodes      "compute"; }'
+++++++ eval 'function    set_compute_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "compute" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_fail2ban_nodes() {    get_XXX_nodes "$@" "fail2ban"; }'
+++++++ eval 'function mc_get_fail2ban_nodes() { mc_get_XXX_nodes      "fail2ban"; }'
+++++++ eval 'function    set_fail2ban_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "fail2ban" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_gpfs_nodes() {    get_XXX_nodes "$@" "gpfs"; }'
+++++++ eval 'function mc_get_gpfs_nodes() { mc_get_XXX_nodes      "gpfs"; }'
+++++++ eval 'function    set_gpfs_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "gpfs" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_head_nodes() {    get_XXX_nodes "$@" "head"; }'
+++++++ eval 'function mc_get_head_nodes() { mc_get_XXX_nodes      "head"; }'
+++++++ eval 'function    set_head_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "head" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_jupyterhub_nodes() {    get_XXX_nodes "$@" "jupyterhub"; }'
+++++++ eval 'function mc_get_jupyterhub_nodes() { mc_get_XXX_nodes      "jupyterhub"; }'
+++++++ eval 'function    set_jupyterhub_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "jupyterhub" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_login_nodes() {    get_XXX_nodes "$@" "login"; }'
+++++++ eval 'function mc_get_login_nodes() { mc_get_XXX_nodes      "login"; }'
+++++++ eval 'function    set_login_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "login" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_monitor_nodes() {    get_XXX_nodes "$@" "monitor"; }'
+++++++ eval 'function mc_get_monitor_nodes() { mc_get_XXX_nodes      "monitor"; }'
+++++++ eval 'function    set_monitor_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "monitor" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_ntpserver_nodes() {    get_XXX_nodes "$@" "ntpserver"; }'
+++++++ eval 'function mc_get_ntpserver_nodes() { mc_get_XXX_nodes      "ntpserver"; }'
+++++++ eval 'function    set_ntpserver_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "ntpserver" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_pbs_client_nodes() {    get_XXX_nodes "$@" "pbs_client"; }'
+++++++ eval 'function mc_get_pbs_client_nodes() { mc_get_XXX_nodes      "pbs_client"; }'
+++++++ eval 'function    set_pbs_client_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "pbs_client" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_pbs_server_nodes() {    get_XXX_nodes "$@" "pbs_server"; }'
+++++++ eval 'function mc_get_pbs_server_nodes() { mc_get_XXX_nodes      "pbs_server"; }'
+++++++ eval 'function    set_pbs_server_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "pbs_server" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_resource_manager_nodes() {    get_XXX_nodes "$@" "resource_manager"; }'
+++++++ eval 'function mc_get_resource_manager_nodes() { mc_get_XXX_nodes      "resource_manager"; }'
+++++++ eval 'function    set_resource_manager_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "resource_manager" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_sdil_nodes() {    get_XXX_nodes "$@" "sdil"; }'
+++++++ eval 'function mc_get_sdil_nodes() { mc_get_XXX_nodes      "sdil"; }'
+++++++ eval 'function    set_sdil_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "sdil" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_slurmssh_nodes() {    get_XXX_nodes "$@" "slurmssh"; }'
+++++++ eval 'function mc_get_slurmssh_nodes() { mc_get_XXX_nodes      "slurmssh"; }'
+++++++ eval 'function    set_slurmssh_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "slurmssh" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_syslogserver_nodes() {    get_XXX_nodes "$@" "syslogserver"; }'
+++++++ eval 'function mc_get_syslogserver_nodes() { mc_get_XXX_nodes      "syslogserver"; }'
+++++++ eval 'function    set_syslogserver_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "syslogserver" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_tsmserver_nodes() {    get_XXX_nodes "$@" "tsmserver"; }'
+++++++ eval 'function mc_get_tsmserver_nodes() { mc_get_XXX_nodes      "tsmserver"; }'
+++++++ eval 'function    set_tsmserver_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "tsmserver" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_vmbridge_compute_nodes() {    get_XXX_nodes "$@" "vmbridge_compute"; }'
+++++++ eval 'function mc_get_vmbridge_compute_nodes() { mc_get_XXX_nodes      "vmbridge_compute"; }'
+++++++ eval 'function    set_vmbridge_compute_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "vmbridge_compute" "$@";
+		 }'
+++++++ for ROLE in addconsole all ci_controller compute fail2ban gpfs head jupyterhub login monitor ntpserver pbs_client pbs_server resource_manager sdil slurmssh syslogserver tsmserver vmbridge_compute vmbridge_server
+++++++ eval 'function    get_vmbridge_server_nodes() {    get_XXX_nodes "$@" "vmbridge_server"; }'
+++++++ eval 'function mc_get_vmbridge_server_nodes() { mc_get_XXX_nodes      "vmbridge_server"; }'
+++++++ eval 'function    set_vmbridge_server_nodes() {
+			 local CURRENT_CONFIGFILE="${CONFIGFILE}"
+			 local REGEX_CURRENT_CONFIGFILE="^--config=(.*)$"
+			 if [[ $# -ne 0 && "$1" =~  ${REGEX_CURRENT_CONFIGFILE} ]]; then
+				 CURRENT_CONFIGFILE="${BASH_REMATCH[1]}"
+				 shift
+			 fi
+			 set_XXX_nodes "--config=${CURRENT_CONFIGFILE}" "vmbridge_server" "$@";
+		 }'
+++++++ create_mc_function get_cluster_name
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_cluster_name() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_cluster_name "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_system_mail_recipient
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_system_mail_recipient() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_system_mail_recipient "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_mail_origin
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_mail_origin() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_mail_origin "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_external_ntpserver
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_external_ntpserver() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_external_ntpserver "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_additional_net_interface_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_additional_net_interface_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_additional_net_interface_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_external_gateway_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_external_gateway_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_external_gateway_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_additional_gateway_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_additional_gateway_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_additional_gateway_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_nat_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_nat_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_nat_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_natserver_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_natserver_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_natserver_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_natclients_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_natclients_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_natclients_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_all_nodes_except_headnodes_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_all_nodes_except_headnodes_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_all_nodes_except_headnodes_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_syslogclient_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_syslogclient_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_syslogclient_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ldap_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ldap_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ldap_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function remove_ldap_bindpw
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_remove_ldap_bindpw() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   remove_ldap_bindpw "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_linux_cmdline_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_linux_cmdline_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_linux_cmdline_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_file_permissions_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_file_permissions_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_file_permissions_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_file_acl_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_file_acl_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_file_acl_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ulimits_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ulimits_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ulimits_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_remote_filesystem_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_remote_filesystem_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_remote_filesystem_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_swappiness_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_swappiness_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_swappiness_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_opensm_ha_groups
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_opensm_ha_groups() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_opensm_ha_groups "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_opensm_prio_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_opensm_prio_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_opensm_prio_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_opensm_routing_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_opensm_routing_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_opensm_routing_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_tsm_home
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_tsm_home() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_tsm_home "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_tsm_owner
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_tsm_owner() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_tsm_owner "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_tsm_node_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_tsm_node_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_tsm_node_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ip_range_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ip_range_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ip_range_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipv6_range_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipv6_range_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipv6_range_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipv6_eui_range_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipv6_eui_range_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipv6_eui_range_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipv6_link_range_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipv6_link_range_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipv6_link_range_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipmi_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipmi_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipmi_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipmi_module_names
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipmi_module_names() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipmi_module_names "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_switch_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_switch_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_switch_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_switch_names
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_switch_names() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_switch_names "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_mac_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_mac_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_mac_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_guid_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_guid_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_guid_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_bios_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_bios_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_bios_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_cpu_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_cpu_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_cpu_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_memory_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_memory_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_memory_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_installed_disk_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_installed_disk_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_installed_disk_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_md_device_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_md_device_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_md_device_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_interconnect_device_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_interconnect_device_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_interconnect_device_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ethernet_speed_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ethernet_speed_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ethernet_speed_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_gpu_device_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_gpu_device_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_gpu_device_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_localfs_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_localfs_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_localfs_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_kernel_config
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_kernel_config() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_kernel_config "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_system_user_uid_limit
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_system_user_uid_limit() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_system_user_uid_limit "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipmi_main_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipmi_main_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipmi_main_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ create_mc_function get_ipmi_sub_nodes
+++++++ for FUNCTION in "$@"
+++++++ eval '
+			function mc_get_ipmi_sub_nodes() {
+			   local CURRENT_CONFIGFILE
+			   for CURRENT_CONFIGFILE in $(mc_get_config)
+			   do
+				   get_ipmi_sub_nodes "--config=${CURRENT_CONFIGFILE}"
+			   done
+			}'
+++++++ get_login_nodes
+++++++ get_XXX_nodes login
+++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
+++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
+++++++ [[ 1 -ne 0 ]]
+++++++ [[ login =~ ^--config=(.*)$ ]]
+++++++ local ROLE=login
+++++++ local NODES=
++++++++ get_XML_config --config=/etc/cluster_config/config.xml '/config/role_config/role[.="login"]'
++++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
++++++++ [[ 2 -ne 0 ]]
++++++++ [[ --config=/etc/cluster_config/config.xml =~ ^--config=(.*)$ ]]
++++++++ CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++ shift
++++++++ local 'XPATH=/config/role_config/role[.="login"]'
++++++++ shift
++++++++ VAR_NAME_ARRAY=()
++++++++ local -a VAR_NAME_ARRAY
++++++++ XML_FIELD_ARRAY=()
++++++++ local -a XML_FIELD_ARRAY
++++++++ [[ 0 -gt 0 ]]
++++++++ local 'DELIMITER='\'''
++++++++ CAT_CMD_ARRAY=('cat_xml_with_xinclude' '/etc/cluster_config/config.xml')
++++++++ local CAT_CMD_ARRAY
++++++++ CMD_ARRAY=('/usr/bin/xmlstarlet' 'sel' '--text' '--template' '--match' '/config/role_config/role[.="login"]')
++++++++ local CMD_ARRAY
++++++++ local XML_FIELD
++++++++ CMD_ARRAY+=("--value-of" "@nodes" "--output" "${DELIMITER}")
++++++++ CMD_ARRAY+=("--value-of" "@roles" "--output" "${DELIMITER}")
++++++++ CMD_ARRAY+=("--nl")
++++++++ local CMD_OUTPUT
+++++++++ cat_xml_with_xinclude /etc/cluster_config/config.xml
+++++++++ [[ 1 -eq 0 ]]
+++++++++ xmllint --xinclude --xmlout /etc/cluster_config/config.xml
+++++++++ /usr/bin/xmlstarlet sel --text --template --match '/config/role_config/role[.="login"]' --value-of @nodes --output \' --value-of @roles --output \' --nl
++++++++ CMD_OUTPUT=''\''hw:server:Lenovo_SR630_v2 hw:server:Lenovo_SR665_v3'\'''
++++++++ IFS=\'
++++++++ read -r NODES ROLES
++++++++ '[' -n 'hw:server:Lenovo_SR630_v2 hw:server:Lenovo_SR665_v3' ']'
+++++++++++ expandnodes 'hw:server:Lenovo_SR630_v2 hw:server:Lenovo_SR665_v3'
+++++++++++ [[ 1 -ne 1 ]]
+++++++++++ hostlist2 --expand 'hw:server:Lenovo_SR630_v2 hw:server:Lenovo_SR665_v3'
+++++++++++ [[ -z hw:server:Lenovo_SR630_v2 hw:server:Lenovo_SR665_v3 ]]
+++++++++++ local GLOB_OPT=-s
+++++++++++ shopt -q -o noglob
+++++++++++ shopt -s -o noglob
+++++++++++ GLOB_OPT=-u
+++++++++++ PYTHONPATH=
+++++++++++ hostlist '--separator= ' --expand -- '' 'hw:server:Lenovo_SR630_v2 hw:server:Lenovo_SR665_v3'
+++++++++++ local ret=0
+++++++++++ shopt -u -o noglob
+++++++++++ [[ 0 -ne 0 ]]
+++++++++++ return 0
++++++++++ roles_to_nodes --config=/etc/cluster_config/config.xml hw:server:Lenovo_SR630_v2 hw:server:Lenovo_SR665_v3
++++++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
++++++++++ [[ 3 -ne 0 ]]
++++++++++ [[ --config=/etc/cluster_config/config.xml =~ ^--config=(.*)$ ]]
++++++++++ CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++++ shift
++++++++++ local NODES
++++++++++ local ROLE
++++++++++ [[ 2 -gt 0 ]]
++++++++++ ROLE=hw:server:Lenovo_SR630_v2
++++++++++ check_configured_role --config=/etc/cluster_config/config.xml hw:server:Lenovo_SR630_v2
++++++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
++++++++++ [[ 2 -ne 0 ]]
++++++++++ [[ --config=/etc/cluster_config/config.xml =~ ^--config=(.*)$ ]]
++++++++++ CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++++ shift
++++++++++ local ROLE=hw:server:Lenovo_SR630_v2
++++++++++ [[ -z hw:server:Lenovo_SR630_v2 ]]
++++++++++ local CONFIGURED_ROLES
+++++++++++ get_configured_roles --config=/etc/cluster_config/config.xml
+++++++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
+++++++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
+++++++++++ [[ 1 -ne 0 ]]
+++++++++++ [[ --config=/etc/cluster_config/config.xml =~ ^--config=(.*)$ ]]
+++++++++++ CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
+++++++++++ shift
+++++++++++ local ROLES
++++++++++++ cat_xml_with_xinclude /etc/cluster_config/config.xml
++++++++++++ [[ 1 -eq 0 ]]
++++++++++++ xmllint --xinclude --xmlout /etc/cluster_config/config.xml
++++++++++++ /usr/bin/xmlstarlet sel --text --template --match /config/role_config --value-of role
+++++++++++ ROLES='login
+ci_controller
+compute
+head
+all
+gpfs
+ntpserver
+syslogserver
+fail2ban
+tsmserver
+resource_manager
+pbs_server
+pbs_client
+vmbridge_server
+vmbridge_compute
+hw:server:Nvidia_DGX_A100
+hw:server:Lenovo_SD650-N_v2
+hw:server:Lenovo_SD665-N_v3_H100
+hw:server:Lenovo_SD665-N_v3_H200
+hw:server:Lenovo_SD6665-N_v2
+hw:server:Lenovo_SD650_v2_256GB
+hw:server:Lenovo_SD650_v2_512GB
+hw:server:Lenovo_SD650_v2
+hw:server:Lenovo_SR650_v2
+hw:server:Lenovo_SR630
+hw:server:Lenovo_SR630_non_head
+hw:server:Lenovo_SR630_head
+hw:server:Lenovo_SR630_v2
+hw:server:Lenovo_SR665_v3
+hkch001
+hkch002
+hkch003
+hkch004
+hkch005
+hkch006
+hkch011
+hkch012
+hkch013
+hkch014
+hkch015
+hkch016
+hkch021
+hkch022
+hkch023
+hkch024
+hkch025
+hkch026
+hkch031
+hkch032
+hkch033
+hkch034
+hkch035
+hkch036
+hkch041
+hkch042
+hkch043
+hkch044
+hkch045
+hkch046
+hkch051
+hkch052
+hkch053
+hkch054
+hkch055
+hkch056
+hkch061
+hkch062
+hkch063
+hkch064
+hkch065
+hkch066
+hkch071
+hkch072
+hkch073
+hkch074
+hkch075
+hkch076
+hkch081
+hkch082
+hkch083
+hkch084
+hkch085
+hkch086
+hkch091
+hkch092
+hkch093
+hkch094
+hkch095
+hkch101
+hkch102
+hkch103
+hkch104
+hkch105
+hkch106
+hkch111
+hkch112
+hkch113
+hkch114
+hkch115
+hkch116
+hkch121
+hkch122
+hkch123
+hkch124
+hkch125
+hkch126
+hkch161
+hkch162
+hkch163
+hkch164
+hkch165
+hkch166
+hkch171
+hkch172
+hkch173
+hkch174
+hkch175
+hkch176
+rack00
+rack01
+rack02
+rack03
+rack04
+rack05
+rack06
+rack07
+rack08
+rack017
+rack10
+rack11
+rack12
+rack16
+rack17
+rack18
+rack110
+rack116
+jupyterhub
+jupyterhub_hk'
+++++++++++ echo 'login
+ci_controller
+compute
+head
+all
+gpfs
+ntpserver
+syslogserver
+fail2ban
+tsmserver
+resource_manager
+pbs_server
+pbs_client
+vmbridge_server
+vmbridge_compute
+hw:server:Nvidia_DGX_A100
+hw:server:Lenovo_SD650-N_v2
+hw:server:Lenovo_SD665-N_v3_H100
+hw:server:Lenovo_SD665-N_v3_H200
+hw:server:Lenovo_SD6665-N_v2
+hw:server:Lenovo_SD650_v2_256GB
+hw:server:Lenovo_SD650_v2_512GB
+hw:server:Lenovo_SD650_v2
+hw:server:Lenovo_SR650_v2
+hw:server:Lenovo_SR630
+hw:server:Lenovo_SR630_non_head
+hw:server:Lenovo_SR630_head
+hw:server:Lenovo_SR630_v2
+hw:server:Lenovo_SR665_v3
+hkch001
+hkch002
+hkch003
+hkch004
+hkch005
+hkch006
+hkch011
+hkch012
+hkch013
+hkch014
+hkch015
+hkch016
+hkch021
+hkch022
+hkch023
+hkch024
+hkch025
+hkch026
+hkch031
+hkch032
+hkch033
+hkch034
+hkch035
+hkch036
+hkch041
+hkch042
+hkch043
+hkch044
+hkch045
+hkch046
+hkch051
+hkch052
+hkch053
+hkch054
+hkch055
+hkch056
+hkch061
+hkch062
+hkch063
+hkch064
+hkch065
+hkch066
+hkch071
+hkch072
+hkch073
+hkch074
+hkch075
+hkch076
+hkch081
+hkch082
+hkch083
+hkch084
+hkch085
+hkch086
+hkch091
+hkch092
+hkch093
+hkch094
+hkch095
+hkch101
+hkch102
+hkch103
+hkch104
+hkch105
+hkch106
+hkch111
+hkch112
+hkch113
+hkch114
+hkch115
+hkch116
+hkch121
+hkch122
+hkch123
+hkch124
+hkch125
+hkch126
+hkch161
+hkch162
+hkch163
+hkch164
+hkch165
+hkch166
+hkch171
+hkch172
+hkch173
+hkch174
+hkch175
+hkch176
+rack00
+rack01
+rack02
+rack03
+rack04
+rack05
+rack06
+rack07
+rack08
+rack017
+rack10
+rack11
+rack12
+rack16
+rack17
+rack18
+rack110
+rack116
+jupyterhub
+jupyterhub_hk'
++++++++++ CONFIGURED_ROLES='login
+ci_controller
+compute
+head
+all
+gpfs
+ntpserver
+syslogserver
+fail2ban
+tsmserver
+resource_manager
+pbs_server
+pbs_client
+vmbridge_server
+vmbridge_compute
+hw:server:Nvidia_DGX_A100
+hw:server:Lenovo_SD650-N_v2
+hw:server:Lenovo_SD665-N_v3_H100
+hw:server:Lenovo_SD665-N_v3_H200
+hw:server:Lenovo_SD6665-N_v2
+hw:server:Lenovo_SD650_v2_256GB
+hw:server:Lenovo_SD650_v2_512GB
+hw:server:Lenovo_SD650_v2
+hw:server:Lenovo_SR650_v2
+hw:server:Lenovo_SR630
+hw:server:Lenovo_SR630_non_head
+hw:server:Lenovo_SR630_head
+hw:server:Lenovo_SR630_v2
+hw:server:Lenovo_SR665_v3
+hkch001
+hkch002
+hkch003
+hkch004
+hkch005
+hkch006
+hkch011
+hkch012
+hkch013
+hkch014
+hkch015
+hkch016
+hkch021
+hkch022
+hkch023
+hkch024
+hkch025
+hkch026
+hkch031
+hkch032
+hkch033
+hkch034
+hkch035
+hkch036
+hkch041
+hkch042
+hkch043
+hkch044
+hkch045
+hkch046
+hkch051
+hkch052
+hkch053
+hkch054
+hkch055
+hkch056
+hkch061
+hkch062
+hkch063
+hkch064
+hkch065
+hkch066
+hkch071
+hkch072
+hkch073
+hkch074
+hkch075
+hkch076
+hkch081
+hkch082
+hkch083
+hkch084
+hkch085
+hkch086
+hkch091
+hkch092
+hkch093
+hkch094
+hkch095
+hkch101
+hkch102
+hkch103
+hkch104
+hkch105
+hkch106
+hkch111
+hkch112
+hkch113
+hkch114
+hkch115
+hkch116
+hkch121
+hkch122
+hkch123
+hkch124
+hkch125
+hkch126
+hkch161
+hkch162
+hkch163
+hkch164
+hkch165
+hkch166
+hkch171
+hkch172
+hkch173
+hkch174
+hkch175
+hkch176
+rack00
+rack01
+rack02
+rack03
+rack04
+rack05
+rack06
+rack07
+rack08
+rack017
+rack10
+rack11
+rack12
+rack16
+rack17
+rack18
+rack110
+rack116
+jupyterhub
+jupyterhub_hk'
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \l\o\g\i\n ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \c\i\_\c\o\n\t\r\o\l\l\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \c\o\m\p\u\t\e ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\e\a\d ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \a\l\l ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \g\p\f\s ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \n\t\p\s\e\r\v\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \s\y\s\l\o\g\s\e\r\v\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \f\a\i\l\2\b\a\n ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \t\s\m\s\e\r\v\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \r\e\s\o\u\r\c\e\_\m\a\n\a\g\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \p\b\s\_\s\e\r\v\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \p\b\s\_\c\l\i\e\n\t ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \v\m\b\r\i\d\g\e\_\s\e\r\v\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \v\m\b\r\i\d\g\e\_\c\o\m\p\u\t\e ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\N\v\i\d\i\a\_\D\G\X\_\A\1\0\0 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\5\0\-\N\_\v\2 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\6\5\-\N\_\v\3\_\H\1\0\0 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\6\5\-\N\_\v\3\_\H\2\0\0 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\6\6\5\-\N\_\v\2 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\5\0\_\v\2\_\2\5\6\G\B ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\5\0\_\v\2\_\5\1\2\G\B ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\5\0\_\v\2 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\5\0\_\v\2 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\3\0 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\3\0\_\n\o\n\_\h\e\a\d ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\3\0\_\h\e\a\d ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR630_v2 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\3\0\_\v\2 ]]
++++++++++ return 0
+++++++++++ get_XXX_nodes --config=/etc/cluster_config/config.xml hw:server:Lenovo_SR630_v2
+++++++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
+++++++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
+++++++++++ [[ 2 -ne 0 ]]
+++++++++++ [[ --config=/etc/cluster_config/config.xml =~ ^--config=(.*)$ ]]
+++++++++++ CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
+++++++++++ shift
+++++++++++ local ROLE=hw:server:Lenovo_SR630_v2
+++++++++++ local NODES=
++++++++++++ get_XML_config --config=/etc/cluster_config/config.xml '/config/role_config/role[.="hw:server:Lenovo_SR630_v2"]'
++++++++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
++++++++++++ [[ 2 -ne 0 ]]
++++++++++++ [[ --config=/etc/cluster_config/config.xml =~ ^--config=(.*)$ ]]
++++++++++++ CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++++++ shift
++++++++++++ local 'XPATH=/config/role_config/role[.="hw:server:Lenovo_SR630_v2"]'
++++++++++++ shift
++++++++++++ VAR_NAME_ARRAY=()
++++++++++++ local -a VAR_NAME_ARRAY
++++++++++++ XML_FIELD_ARRAY=()
++++++++++++ local -a XML_FIELD_ARRAY
++++++++++++ [[ 0 -gt 0 ]]
++++++++++++ local 'DELIMITER='\'''
++++++++++++ CAT_CMD_ARRAY=('cat_xml_with_xinclude' '/etc/cluster_config/config.xml')
++++++++++++ local CAT_CMD_ARRAY
++++++++++++ CMD_ARRAY=('/usr/bin/xmlstarlet' 'sel' '--text' '--template' '--match' '/config/role_config/role[.="hw:server:Lenovo_SR630_v2"]')
++++++++++++ local CMD_ARRAY
++++++++++++ local XML_FIELD
++++++++++++ CMD_ARRAY+=("--value-of" "@nodes" "--output" "${DELIMITER}")
++++++++++++ CMD_ARRAY+=("--value-of" "@roles" "--output" "${DELIMITER}")
++++++++++++ CMD_ARRAY+=("--nl")
++++++++++++ local CMD_OUTPUT
+++++++++++++ cat_xml_with_xinclude /etc/cluster_config/config.xml
+++++++++++++ [[ 1 -eq 0 ]]
+++++++++++++ xmllint --xinclude --xmlout /etc/cluster_config/config.xml
+++++++++++++ /usr/bin/xmlstarlet sel --text --template --match '/config/role_config/role[.="hw:server:Lenovo_SR630_v2"]' --value-of @nodes --output \' --value-of @roles --output \' --nl
++++++++++++ CMD_OUTPUT='hkn[1990-1993]'\'''\'''
++++++++++++ IFS=\'
++++++++++++ read -r NODES ROLES
++++++++++++ '[' -n '' ']'
+++++++++++++ expandnodes 'hkn[1990-1993]'
+++++++++++++ [[ 1 -ne 1 ]]
+++++++++++++ hostlist2 --expand 'hkn[1990-1993]'
+++++++++++++ [[ -z hkn[1990-1993] ]]
+++++++++++++ local GLOB_OPT=-s
+++++++++++++ shopt -q -o noglob
+++++++++++++ shopt -s -o noglob
+++++++++++++ GLOB_OPT=-u
+++++++++++++ PYTHONPATH=
+++++++++++++ hostlist '--separator= ' --expand -- '' 'hkn[1990-1993]'
+++++++++++++ local ret=0
+++++++++++++ shopt -u -o noglob
+++++++++++++ [[ 0 -ne 0 ]]
+++++++++++++ return 0
++++++++++++ NODES='hkn1990 hkn1991 hkn1992 hkn1993'
++++++++++++ local VAR_NAME
++++++++++++ echo 'NODES='\''hkn1990 hkn1991 hkn1992 hkn1993'\'''
++++++++++++ IFS=\'
++++++++++++ read -r NODES ROLES
+++++++++++ eval 'NODES='\''hkn1990 hkn1991 hkn1992 hkn1993'\'''
++++++++++++ NODES='hkn1990 hkn1991 hkn1992 hkn1993'
+++++++++++ echo 'hkn1990 hkn1991 hkn1992 hkn1993'
++++++++++ NODES+=' hkn1990 hkn1991 hkn1992 hkn1993'
++++++++++ shift
++++++++++ [[ 1 -gt 0 ]]
++++++++++ ROLE=hw:server:Lenovo_SR665_v3
++++++++++ check_configured_role --config=/etc/cluster_config/config.xml hw:server:Lenovo_SR665_v3
++++++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
++++++++++ [[ 2 -ne 0 ]]
++++++++++ [[ --config=/etc/cluster_config/config.xml =~ ^--config=(.*)$ ]]
++++++++++ CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++++ shift
++++++++++ local ROLE=hw:server:Lenovo_SR665_v3
++++++++++ [[ -z hw:server:Lenovo_SR665_v3 ]]
++++++++++ local CONFIGURED_ROLES
+++++++++++ get_configured_roles --config=/etc/cluster_config/config.xml
+++++++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
+++++++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
+++++++++++ [[ 1 -ne 0 ]]
+++++++++++ [[ --config=/etc/cluster_config/config.xml =~ ^--config=(.*)$ ]]
+++++++++++ CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
+++++++++++ shift
+++++++++++ local ROLES
++++++++++++ cat_xml_with_xinclude /etc/cluster_config/config.xml
++++++++++++ [[ 1 -eq 0 ]]
++++++++++++ xmllint --xinclude --xmlout /etc/cluster_config/config.xml
++++++++++++ /usr/bin/xmlstarlet sel --text --template --match /config/role_config --value-of role
+++++++++++ ROLES='login
+ci_controller
+compute
+head
+all
+gpfs
+ntpserver
+syslogserver
+fail2ban
+tsmserver
+resource_manager
+pbs_server
+pbs_client
+vmbridge_server
+vmbridge_compute
+hw:server:Nvidia_DGX_A100
+hw:server:Lenovo_SD650-N_v2
+hw:server:Lenovo_SD665-N_v3_H100
+hw:server:Lenovo_SD665-N_v3_H200
+hw:server:Lenovo_SD6665-N_v2
+hw:server:Lenovo_SD650_v2_256GB
+hw:server:Lenovo_SD650_v2_512GB
+hw:server:Lenovo_SD650_v2
+hw:server:Lenovo_SR650_v2
+hw:server:Lenovo_SR630
+hw:server:Lenovo_SR630_non_head
+hw:server:Lenovo_SR630_head
+hw:server:Lenovo_SR630_v2
+hw:server:Lenovo_SR665_v3
+hkch001
+hkch002
+hkch003
+hkch004
+hkch005
+hkch006
+hkch011
+hkch012
+hkch013
+hkch014
+hkch015
+hkch016
+hkch021
+hkch022
+hkch023
+hkch024
+hkch025
+hkch026
+hkch031
+hkch032
+hkch033
+hkch034
+hkch035
+hkch036
+hkch041
+hkch042
+hkch043
+hkch044
+hkch045
+hkch046
+hkch051
+hkch052
+hkch053
+hkch054
+hkch055
+hkch056
+hkch061
+hkch062
+hkch063
+hkch064
+hkch065
+hkch066
+hkch071
+hkch072
+hkch073
+hkch074
+hkch075
+hkch076
+hkch081
+hkch082
+hkch083
+hkch084
+hkch085
+hkch086
+hkch091
+hkch092
+hkch093
+hkch094
+hkch095
+hkch101
+hkch102
+hkch103
+hkch104
+hkch105
+hkch106
+hkch111
+hkch112
+hkch113
+hkch114
+hkch115
+hkch116
+hkch121
+hkch122
+hkch123
+hkch124
+hkch125
+hkch126
+hkch161
+hkch162
+hkch163
+hkch164
+hkch165
+hkch166
+hkch171
+hkch172
+hkch173
+hkch174
+hkch175
+hkch176
+rack00
+rack01
+rack02
+rack03
+rack04
+rack05
+rack06
+rack07
+rack08
+rack017
+rack10
+rack11
+rack12
+rack16
+rack17
+rack18
+rack110
+rack116
+jupyterhub
+jupyterhub_hk'
+++++++++++ echo 'login
+ci_controller
+compute
+head
+all
+gpfs
+ntpserver
+syslogserver
+fail2ban
+tsmserver
+resource_manager
+pbs_server
+pbs_client
+vmbridge_server
+vmbridge_compute
+hw:server:Nvidia_DGX_A100
+hw:server:Lenovo_SD650-N_v2
+hw:server:Lenovo_SD665-N_v3_H100
+hw:server:Lenovo_SD665-N_v3_H200
+hw:server:Lenovo_SD6665-N_v2
+hw:server:Lenovo_SD650_v2_256GB
+hw:server:Lenovo_SD650_v2_512GB
+hw:server:Lenovo_SD650_v2
+hw:server:Lenovo_SR650_v2
+hw:server:Lenovo_SR630
+hw:server:Lenovo_SR630_non_head
+hw:server:Lenovo_SR630_head
+hw:server:Lenovo_SR630_v2
+hw:server:Lenovo_SR665_v3
+hkch001
+hkch002
+hkch003
+hkch004
+hkch005
+hkch006
+hkch011
+hkch012
+hkch013
+hkch014
+hkch015
+hkch016
+hkch021
+hkch022
+hkch023
+hkch024
+hkch025
+hkch026
+hkch031
+hkch032
+hkch033
+hkch034
+hkch035
+hkch036
+hkch041
+hkch042
+hkch043
+hkch044
+hkch045
+hkch046
+hkch051
+hkch052
+hkch053
+hkch054
+hkch055
+hkch056
+hkch061
+hkch062
+hkch063
+hkch064
+hkch065
+hkch066
+hkch071
+hkch072
+hkch073
+hkch074
+hkch075
+hkch076
+hkch081
+hkch082
+hkch083
+hkch084
+hkch085
+hkch086
+hkch091
+hkch092
+hkch093
+hkch094
+hkch095
+hkch101
+hkch102
+hkch103
+hkch104
+hkch105
+hkch106
+hkch111
+hkch112
+hkch113
+hkch114
+hkch115
+hkch116
+hkch121
+hkch122
+hkch123
+hkch124
+hkch125
+hkch126
+hkch161
+hkch162
+hkch163
+hkch164
+hkch165
+hkch166
+hkch171
+hkch172
+hkch173
+hkch174
+hkch175
+hkch176
+rack00
+rack01
+rack02
+rack03
+rack04
+rack05
+rack06
+rack07
+rack08
+rack017
+rack10
+rack11
+rack12
+rack16
+rack17
+rack18
+rack110
+rack116
+jupyterhub
+jupyterhub_hk'
++++++++++ CONFIGURED_ROLES='login
+ci_controller
+compute
+head
+all
+gpfs
+ntpserver
+syslogserver
+fail2ban
+tsmserver
+resource_manager
+pbs_server
+pbs_client
+vmbridge_server
+vmbridge_compute
+hw:server:Nvidia_DGX_A100
+hw:server:Lenovo_SD650-N_v2
+hw:server:Lenovo_SD665-N_v3_H100
+hw:server:Lenovo_SD665-N_v3_H200
+hw:server:Lenovo_SD6665-N_v2
+hw:server:Lenovo_SD650_v2_256GB
+hw:server:Lenovo_SD650_v2_512GB
+hw:server:Lenovo_SD650_v2
+hw:server:Lenovo_SR650_v2
+hw:server:Lenovo_SR630
+hw:server:Lenovo_SR630_non_head
+hw:server:Lenovo_SR630_head
+hw:server:Lenovo_SR630_v2
+hw:server:Lenovo_SR665_v3
+hkch001
+hkch002
+hkch003
+hkch004
+hkch005
+hkch006
+hkch011
+hkch012
+hkch013
+hkch014
+hkch015
+hkch016
+hkch021
+hkch022
+hkch023
+hkch024
+hkch025
+hkch026
+hkch031
+hkch032
+hkch033
+hkch034
+hkch035
+hkch036
+hkch041
+hkch042
+hkch043
+hkch044
+hkch045
+hkch046
+hkch051
+hkch052
+hkch053
+hkch054
+hkch055
+hkch056
+hkch061
+hkch062
+hkch063
+hkch064
+hkch065
+hkch066
+hkch071
+hkch072
+hkch073
+hkch074
+hkch075
+hkch076
+hkch081
+hkch082
+hkch083
+hkch084
+hkch085
+hkch086
+hkch091
+hkch092
+hkch093
+hkch094
+hkch095
+hkch101
+hkch102
+hkch103
+hkch104
+hkch105
+hkch106
+hkch111
+hkch112
+hkch113
+hkch114
+hkch115
+hkch116
+hkch121
+hkch122
+hkch123
+hkch124
+hkch125
+hkch126
+hkch161
+hkch162
+hkch163
+hkch164
+hkch165
+hkch166
+hkch171
+hkch172
+hkch173
+hkch174
+hkch175
+hkch176
+rack00
+rack01
+rack02
+rack03
+rack04
+rack05
+rack06
+rack07
+rack08
+rack017
+rack10
+rack11
+rack12
+rack16
+rack17
+rack18
+rack110
+rack116
+jupyterhub
+jupyterhub_hk'
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \l\o\g\i\n ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \c\i\_\c\o\n\t\r\o\l\l\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \c\o\m\p\u\t\e ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\e\a\d ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \a\l\l ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \g\p\f\s ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \n\t\p\s\e\r\v\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \s\y\s\l\o\g\s\e\r\v\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \f\a\i\l\2\b\a\n ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \t\s\m\s\e\r\v\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \r\e\s\o\u\r\c\e\_\m\a\n\a\g\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \p\b\s\_\s\e\r\v\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \p\b\s\_\c\l\i\e\n\t ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \v\m\b\r\i\d\g\e\_\s\e\r\v\e\r ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \v\m\b\r\i\d\g\e\_\c\o\m\p\u\t\e ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\N\v\i\d\i\a\_\D\G\X\_\A\1\0\0 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\5\0\-\N\_\v\2 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\6\5\-\N\_\v\3\_\H\1\0\0 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\6\5\-\N\_\v\3\_\H\2\0\0 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\6\6\5\-\N\_\v\2 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\5\0\_\v\2\_\2\5\6\G\B ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\5\0\_\v\2\_\5\1\2\G\B ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\D\6\5\0\_\v\2 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\5\0\_\v\2 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\3\0 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\3\0\_\n\o\n\_\h\e\a\d ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\3\0\_\h\e\a\d ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\3\0\_\v\2 ]]
++++++++++ for CONFIGURED_ROLE in ${CONFIGURED_ROLES}
++++++++++ [[ hw:server:Lenovo_SR665_v3 == \h\w\:\s\e\r\v\e\r\:\L\e\n\o\v\o\_\S\R\6\6\5\_\v\3 ]]
++++++++++ return 0
+++++++++++ get_XXX_nodes --config=/etc/cluster_config/config.xml hw:server:Lenovo_SR665_v3
+++++++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
+++++++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
+++++++++++ [[ 2 -ne 0 ]]
+++++++++++ [[ --config=/etc/cluster_config/config.xml =~ ^--config=(.*)$ ]]
+++++++++++ CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
+++++++++++ shift
+++++++++++ local ROLE=hw:server:Lenovo_SR665_v3
+++++++++++ local NODES=
++++++++++++ get_XML_config --config=/etc/cluster_config/config.xml '/config/role_config/role[.="hw:server:Lenovo_SR665_v3"]'
++++++++++++ local CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++++++ local 'REGEX_CURRENT_CONFIGFILE=^--config=(.*)$'
++++++++++++ [[ 2 -ne 0 ]]
++++++++++++ [[ --config=/etc/cluster_config/config.xml =~ ^--config=(.*)$ ]]
++++++++++++ CURRENT_CONFIGFILE=/etc/cluster_config/config.xml
++++++++++++ shift
++++++++++++ local 'XPATH=/config/role_config/role[.="hw:server:Lenovo_SR665_v3"]'
++++++++++++ shift
++++++++++++ VAR_NAME_ARRAY=()
++++++++++++ local -a VAR_NAME_ARRAY
++++++++++++ XML_FIELD_ARRAY=()
++++++++++++ local -a XML_FIELD_ARRAY
++++++++++++ [[ 0 -gt 0 ]]
++++++++++++ local 'DELIMITER='\'''
++++++++++++ CAT_CMD_ARRAY=('cat_xml_with_xinclude' '/etc/cluster_config/config.xml')
++++++++++++ local CAT_CMD_ARRAY
++++++++++++ CMD_ARRAY=('/usr/bin/xmlstarlet' 'sel' '--text' '--template' '--match' '/config/role_config/role[.="hw:server:Lenovo_SR665_v3"]')
++++++++++++ local CMD_ARRAY
++++++++++++ local XML_FIELD
++++++++++++ CMD_ARRAY+=("--value-of" "@nodes" "--output" "${DELIMITER}")
++++++++++++ CMD_ARRAY+=("--value-of" "@roles" "--output" "${DELIMITER}")
++++++++++++ CMD_ARRAY+=("--nl")
++++++++++++ local CMD_OUTPUT
+++++++++++++ cat_xml_with_xinclude /etc/cluster_config/config.xml
+++++++++++++ [[ 1 -eq 0 ]]
+++++++++++++ xmllint --xinclude --xmlout /etc/cluster_config/config.xml
+++++++++++++ /usr/bin/xmlstarlet sel --text --template --match '/config/role_config/role[.="hw:server:Lenovo_SR665_v3"]' --value-of @nodes --output \' --value-of @roles --output \' --nl
++++++++++++ CMD_OUTPUT='hkn[1988-1989]'\'''\'''
++++++++++++ IFS=\'
++++++++++++ read -r NODES ROLES
++++++++++++ '[' -n '' ']'
+++++++++++++ expandnodes 'hkn[1988-1989]'
+++++++++++++ [[ 1 -ne 1 ]]
+++++++++++++ hostlist2 --expand 'hkn[1988-1989]'
+++++++++++++ [[ -z hkn[1988-1989] ]]
+++++++++++++ local GLOB_OPT=-s
+++++++++++++ shopt -q -o noglob
+++++++++++++ shopt -s -o noglob
+++++++++++++ GLOB_OPT=-u
+++++++++++++ PYTHONPATH=
+++++++++++++ hostlist '--separator= ' --expand -- '' 'hkn[1988-1989]'
+++++++++++++ local ret=0
+++++++++++++ shopt -u -o noglob
+++++++++++++ [[ 0 -ne 0 ]]
+++++++++++++ return 0
++++++++++++ NODES='hkn1988 hkn1989'
++++++++++++ local VAR_NAME
++++++++++++ echo 'NODES='\''hkn1988 hkn1989'\'''
++++++++++++ IFS=\'
++++++++++++ read -r NODES ROLES
+++++++++++ eval 'NODES='\''hkn1988 hkn1989'\'''
++++++++++++ NODES='hkn1988 hkn1989'
+++++++++++ echo 'hkn1988 hkn1989'
++++++++++ NODES+=' hkn1988 hkn1989'
++++++++++ shift
++++++++++ [[ 0 -gt 0 ]]
++++++++++ expandnodes ' hkn1990 hkn1991 hkn1992 hkn1993 hkn1988 hkn1989'
++++++++++ [[ 1 -ne 1 ]]
++++++++++ hostlist2 --expand ' hkn1990 hkn1991 hkn1992 hkn1993 hkn1988 hkn1989'
++++++++++ [[ -z  hkn1990 hkn1991 hkn1992 hkn1993 hkn1988 hkn1989 ]]
++++++++++ local GLOB_OPT=-s
++++++++++ shopt -q -o noglob
++++++++++ shopt -s -o noglob
++++++++++ GLOB_OPT=-u
++++++++++ PYTHONPATH=
++++++++++ hostlist '--separator= ' --expand -- '' ' hkn1990 hkn1991 hkn1992 hkn1993 hkn1988 hkn1989'
++++++++++ local ret=0
++++++++++ shopt -u -o noglob
++++++++++ [[ 0 -ne 0 ]]
++++++++++ return 0
+++++++++ expandnodes ' hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'
+++++++++ [[ 1 -ne 1 ]]
+++++++++ hostlist2 --expand ' hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'
+++++++++ [[ -z  hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993 ]]
+++++++++ local GLOB_OPT=-s
+++++++++ shopt -q -o noglob
+++++++++ shopt -s -o noglob
+++++++++ GLOB_OPT=-u
+++++++++ PYTHONPATH=
+++++++++ hostlist '--separator= ' --expand -- '' ' hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'
+++++++++ local ret=0
+++++++++ shopt -u -o noglob
+++++++++ [[ 0 -ne 0 ]]
+++++++++ return 0
++++++++ NODES='hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'
++++++++ local VAR_NAME
++++++++ echo 'NODES='\''hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'\'''
++++++++ IFS=\'
++++++++ read -r NODES ROLES
+++++++ eval 'NODES='\''hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'\'''
++++++++ NODES='hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'
+++++++ echo 'hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'
++++++ is_node_in_list 'hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'
++++++ [[ 1 -ne 1 ]]
++++++ local NODES
+++++++ condensenodes 'hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'
+++++++ [[ 1 -ne 1 ]]
+++++++ hostlist2 --collapse 'hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'
+++++++ [[ -z hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993 ]]
+++++++ local GLOB_OPT=-s
+++++++ shopt -q -o noglob
+++++++ shopt -s -o noglob
+++++++ GLOB_OPT=-u
+++++++ PYTHONPATH=
+++++++ hostlist '--separator= ' --collapse -- '' 'hkn1988 hkn1989 hkn1990 hkn1991 hkn1992 hkn1993'
+++++++ local ret=0
+++++++ shopt -u -o noglob
+++++++ [[ 0 -ne 0 ]]
+++++++ return 0
++++++ NODES='hkn[1988-1993]'
++++++ [[ 0 -ne 0 ]]
++++++ local HOST=hkn0423.localdomain
++++++ HOST=hkn0423
++++++ PYTHONPATH=
++++++ hostlist --non-empty --quiet --intersection 'hkn[1988-1993]' hkn0423
+++++ [[ -n hk-project-p0022560/hgf_teb8892/ ]]
+++++ DIRECTORY+=hk-project-p0022560/
+++++ REST=hgf_teb8892/
+++++ [[ ! -d /etc/profile.d/KITE/hk-project-p0022560/ ]]
+++++ debug_echo '"/etc/profile.d/KITE/hk-project-p0022560/" does not exist, done.'
+++++ [[ -n '' ]]
+++++ break
+++++ DIRECTORY=/etc/profile.d/KITE_cluster/hk/
+++++ [[ -d /etc/profile.d/KITE_cluster/hk/ ]]
+++++ for SCRIPT in "${DIRECTORY}"*.sh
+++++ [[ -r /etc/profile.d/KITE_cluster/hk/threads.sh ]]
+++++ debug_echo 'Sourcing "/etc/profile.d/KITE_cluster/hk/threads.sh".'
+++++ [[ -n '' ]]
+++++ source /etc/profile.d/KITE_cluster/hk/threads.sh
++++++ export MKL_NUM_THREADS=1
++++++ MKL_NUM_THREADS=1
++++++ export OMP_NUM_THREADS=1
++++++ OMP_NUM_THREADS=1
+++++ unset DIRECTORY REST SCRIPT
+++++ unset debug_echo
++++ unset i
++++ unset -f pathmunge
+++ [[ /software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:. =~ /home/hk-project-p0022560/hgf_teb8892/\.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin: ]]
+++ export PATH
++++ /home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda shell.bash hook
+++ __conda_setup='export CONDA_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python'\''
+
+# Copyright (C) 2012 Anaconda, Inc
+# SPDX-License-Identifier: BSD-3-Clause
+__conda_exe() (
+    if [ -n "${_CE_M:+x}" ] && [ -n "${_CE_CONDA:+x}" ]; then
+        # only use _CE_M/_CE_CONDA when defined to avoid issues when run with `set -u`
+        "$CONDA_EXE" $_CE_M $_CE_CONDA "$@"
+    else
+        "$CONDA_EXE" "$@"
+    fi
+)
+
+__conda_hashr() {
+    if [ -n "${ZSH_VERSION:+x}" ]; then
+        \rehash
+    elif [ -n "${POSH_VERSION:+x}" ]; then
+        :  # pass
+    else
+        \hash -r
+    fi
+}
+
+__conda_activate() {
+    if [ -n "${CONDA_PS1_BACKUP:+x}" ]; then
+        # Handle transition from shell activated with conda <= 4.3 to a subsequent activation
+        # after conda updated to >= 4.4. See issue #6173.
+        PS1="$CONDA_PS1_BACKUP"
+        \unset CONDA_PS1_BACKUP
+    fi
+    \local ask_conda
+    ask_conda="$(PS1="${PS1:-}" __conda_exe shell.posix "$@")" || \return
+    \eval "$ask_conda"
+    __conda_hashr
+}
+
+__conda_reactivate() {
+    # FUTURE: conda 25.9, remove this function
+    echo "'\''__conda_reactivate'\'' is deprecated and will be removed in 25.9. Use '\''__conda_activate reactivate'\'' instead." 1>&2
+    __conda_activate reactivate
+}
+
+conda() {
+    \local cmd="${1-__missing__}"
+    case "$cmd" in
+        activate|deactivate)
+            __conda_activate "$@"
+            ;;
+        install|update|upgrade|remove|uninstall)
+            __conda_exe "$@" || \return
+            __conda_activate reactivate
+            ;;
+        *)
+            __conda_exe "$@"
+            ;;
+    esac
+}
+
+if [ -z "${CONDA_SHLVL+x}" ]; then
+    \export CONDA_SHLVL=0
+    # In dev-mode CONDA_EXE is python.exe and on Windows
+    # it is in a different relative location to condabin.
+    if [ -n "${_CE_CONDA:+x}" ] && [ -n "${WINDIR+x}" ]; then
+        PATH="$(\dirname "$CONDA_EXE")/condabin${PATH:+":${PATH}"}"
+    else
+        PATH="$(\dirname "$(\dirname "$CONDA_EXE")")/condabin${PATH:+":${PATH}"}"
+    fi
+    \export PATH
+
+    # We'\''re not allowing PS1 to be unbound. It must at least be set.
+    # However, we'\''re not exporting it, which can cause problems when starting a second shell
+    # via a first shell (i.e. starting zsh from bash).
+    if [ -z "${PS1+x}" ]; then
+        PS1=
+    fi
+fi
+
+conda activate base'
+++ '[' 0 -eq 0 ']'
+++ eval 'export CONDA_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda'\''
+export _CE_M='\'''\''
+export _CE_CONDA='\'''\''
+export CONDA_PYTHON_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python'\''
+
+# Copyright (C) 2012 Anaconda, Inc
+# SPDX-License-Identifier: BSD-3-Clause
+__conda_exe() (
+    if [ -n "${_CE_M:+x}" ] && [ -n "${_CE_CONDA:+x}" ]; then
+        # only use _CE_M/_CE_CONDA when defined to avoid issues when run with `set -u`
+        "$CONDA_EXE" $_CE_M $_CE_CONDA "$@"
+    else
+        "$CONDA_EXE" "$@"
+    fi
+)
+
+__conda_hashr() {
+    if [ -n "${ZSH_VERSION:+x}" ]; then
+        \rehash
+    elif [ -n "${POSH_VERSION:+x}" ]; then
+        :  # pass
+    else
+        \hash -r
+    fi
+}
+
+__conda_activate() {
+    if [ -n "${CONDA_PS1_BACKUP:+x}" ]; then
+        # Handle transition from shell activated with conda <= 4.3 to a subsequent activation
+        # after conda updated to >= 4.4. See issue #6173.
+        PS1="$CONDA_PS1_BACKUP"
+        \unset CONDA_PS1_BACKUP
+    fi
+    \local ask_conda
+    ask_conda="$(PS1="${PS1:-}" __conda_exe shell.posix "$@")" || \return
+    \eval "$ask_conda"
+    __conda_hashr
+}
+
+__conda_reactivate() {
+    # FUTURE: conda 25.9, remove this function
+    echo "'\''__conda_reactivate'\'' is deprecated and will be removed in 25.9. Use '\''__conda_activate reactivate'\'' instead." 1>&2
+    __conda_activate reactivate
+}
+
+conda() {
+    \local cmd="${1-__missing__}"
+    case "$cmd" in
+        activate|deactivate)
+            __conda_activate "$@"
+            ;;
+        install|update|upgrade|remove|uninstall)
+            __conda_exe "$@" || \return
+            __conda_activate reactivate
+            ;;
+        *)
+            __conda_exe "$@"
+            ;;
+    esac
+}
+
+if [ -z "${CONDA_SHLVL+x}" ]; then
+    \export CONDA_SHLVL=0
+    # In dev-mode CONDA_EXE is python.exe and on Windows
+    # it is in a different relative location to condabin.
+    if [ -n "${_CE_CONDA:+x}" ] && [ -n "${WINDIR+x}" ]; then
+        PATH="$(\dirname "$CONDA_EXE")/condabin${PATH:+":${PATH}"}"
+    else
+        PATH="$(\dirname "$(\dirname "$CONDA_EXE")")/condabin${PATH:+":${PATH}"}"
+    fi
+    \export PATH
+
+    # We'\''re not allowing PS1 to be unbound. It must at least be set.
+    # However, we'\''re not exporting it, which can cause problems when starting a second shell
+    # via a first shell (i.e. starting zsh from bash).
+    if [ -z "${PS1+x}" ]; then
+        PS1=
+    fi
+fi
+
+conda activate base'
++++ export CONDA_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda
++++ CONDA_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda
++++ export _CE_M=
++++ _CE_M=
++++ export _CE_CONDA=
++++ _CE_CONDA=
++++ export CONDA_PYTHON_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python
++++ CONDA_PYTHON_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python
++++ '[' -z x ']'
++++ conda activate base
++++ local cmd=activate
++++ case "$cmd" in
++++ __conda_activate activate base
++++ '[' -n '' ']'
++++ local ask_conda
+++++ PS1=
+++++ __conda_exe shell.posix activate base
+++++ '[' -n '' ']'
+++++ /home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda shell.posix activate base
++++ ask_conda='unset _CE_M
+unset _CE_CONDA
+PS1='\''(base) '\''
+export PATH='\''/software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:.'\''
+export CONDA_SHLVL='\''1'\''
+export CONDA_PROMPT_MODIFIER='\''(base) '\''
+export CONDA_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda'\''
+export CONDA_PYTHON_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python'\'''
++++ eval 'unset _CE_M
+unset _CE_CONDA
+PS1='\''(base) '\''
+export PATH='\''/software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:.'\''
+export CONDA_SHLVL='\''1'\''
+export CONDA_PROMPT_MODIFIER='\''(base) '\''
+export CONDA_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda'\''
+export CONDA_PYTHON_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python'\'''
+++++ unset _CE_M
+++++ unset _CE_CONDA
+++++ PS1='(base) '
+++++ export PATH=/software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:.
+++++ PATH=/software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:.
+++++ export CONDA_SHLVL=1
+++++ CONDA_SHLVL=1
+++++ export 'CONDA_PROMPT_MODIFIER=(base) '
+++++ CONDA_PROMPT_MODIFIER='(base) '
+++++ export CONDA_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda
+++++ CONDA_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda
+++++ export CONDA_PYTHON_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python
+++++ CONDA_PYTHON_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python
++++ __conda_hashr
++++ '[' -n '' ']'
++++ '[' -n '' ']'
++++ hash -r
+++ unset __conda_setup
++ unset ROCR_VISIBLE_DEVICES HIP_VISIBLE_DEVICES
++ echo 'ROCR_VISIBLE_DEVICES='\'''\'''
++ echo 'HIP_VISIBLE_DEVICES='\'''\'''
++ echo 'CUDA_VISIBLE_DEVICES='\''0,1,2,3'\'''
++ WORKSPACE_DIR=/hkfs/work/workspace/scratch/hgf_teb8892-zt_space
++ export WORKSPACE_DIR=/hkfs/work/workspace/scratch/hgf_teb8892-zt_space
++ WORKSPACE_DIR=/hkfs/work/workspace/scratch/hgf_teb8892-zt_space
++ mkdir -p /hkfs/work/workspace/scratch/hgf_teb8892-zt_space
++ ls -ld /hkfs/work/workspace/scratch/hgf_teb8892-zt_space
++ chmod u+rwx /hkfs/work/workspace/scratch/hgf_teb8892-zt_space
++ export ACCELERATE_LOG_LEVEL=info
++ ACCELERATE_LOG_LEVEL=info
++ export HYDRA_FULL_ERROR=1
++ HYDRA_FULL_ERROR=1
++ export WANDB_DIR=/hkfs/work/workspace/scratch/hgf_teb8892-zt_space/wandb_logs
++ WANDB_DIR=/hkfs/work/workspace/scratch/hgf_teb8892-zt_space/wandb_logs
++ cd /home/hk-project-p0022560/hgf_teb8892/Intuitor/verl-intuitor
++ conda activate pure
++ local cmd=activate
++ case "$cmd" in
++ __conda_activate activate pure
++ '[' -n '' ']'
++ local ask_conda
+++ PS1='(base) '
+++ __conda_exe shell.posix activate pure
+++ '[' -n '' ']'
+++ /home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda shell.posix activate pure
++ ask_conda='unset _CE_M
+unset _CE_CONDA
+PS1='\''(pure) '\''
+export PATH='\''/software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/envs/pure/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:.'\''
+export CONDA_PREFIX='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/envs/pure'\''
+export CONDA_SHLVL='\''2'\''
+export CONDA_DEFAULT_ENV='\''pure'\''
+export CONDA_PROMPT_MODIFIER='\''(pure) '\''
+export CONDA_PREFIX_1='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3'\''
+export CONDA_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda'\''
+export CONDA_PYTHON_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python'\'''
++ eval 'unset _CE_M
+unset _CE_CONDA
+PS1='\''(pure) '\''
+export PATH='\''/software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/envs/pure/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:.'\''
+export CONDA_PREFIX='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/envs/pure'\''
+export CONDA_SHLVL='\''2'\''
+export CONDA_DEFAULT_ENV='\''pure'\''
+export CONDA_PROMPT_MODIFIER='\''(pure) '\''
+export CONDA_PREFIX_1='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3'\''
+export CONDA_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda'\''
+export CONDA_PYTHON_EXE='\''/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python'\'''
+++ unset _CE_M
+++ unset _CE_CONDA
+++ PS1='(pure) '
+++ export PATH=/software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/envs/pure/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:.
+++ PATH=/software/all/bin:/software/all/devel/cuda/12.4/bin:/software/all/mpi/openmpi/5.0-intel-2025.1_llvm/bin:/software/all/toolkit/Intel_OneAPI/compiler/2025.1/bin:/software/all/bin:/hkfs/home/project/hk-project-p0022560/hgf_teb8892/.vscode-server/cli/servers/Stable-848b80aeb52026648a8ff9f7c45a9b0a80641e2e/server/bin/remote-cli:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/envs/pure/bin:/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/condabin:/home/hk-project-p0022560/hgf_teb8892/.local/bin:/home/hk-project-p0022560/hgf_teb8892/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/hk-project-p0022560/hgf_teb8892/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:.
+++ export CONDA_PREFIX=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/envs/pure
+++ CONDA_PREFIX=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/envs/pure
+++ export CONDA_SHLVL=2
+++ CONDA_SHLVL=2
+++ export CONDA_DEFAULT_ENV=pure
+++ CONDA_DEFAULT_ENV=pure
+++ export 'CONDA_PROMPT_MODIFIER=(pure) '
+++ CONDA_PROMPT_MODIFIER='(pure) '
+++ export CONDA_PREFIX_1=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3
+++ CONDA_PREFIX_1=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3
+++ export CONDA_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda
+++ CONDA_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/conda
+++ export CONDA_PYTHON_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python
+++ CONDA_PYTHON_EXE=/home/hk-project-p0022560/hgf_teb8892/envs/miniconda3/bin/python
++ __conda_hashr
++ '[' -n '' ']'
++ '[' -n '' ']'
++ hash -r
++ mkdir -p /hkfs/work/workspace/scratch/hgf_teb8892-zt_space/wandb_logs
++ mkdir -p /hkfs/work/workspace/scratch/hgf_teb8892-zt_space/checkpoints
++ mkdir -p /hkfs/work/workspace/scratch/hgf_teb8892-zt_space/logs
++ tee verl_math_grpo.log
++ PYTHONUNBUFFERED=1
++ python3 -m verl.trainer.main_ppo algorithm.adv_estimator=grpo data.train_files=/home/hk-project-p0022560/hgf_teb8892/data/math/train.parquet data.val_files=/home/hk-project-p0022560/hgf_teb8892/data/math/test.parquet data.train_batch_size=64 data.max_prompt_length=512 data.max_response_length=3072 data.filter_overlong_prompts=True data.truncation=error actor_rollout_ref.model.path=Qwen/Qwen2.5-1.5B actor_rollout_ref.model.use_fused_kernels=False actor_rollout_ref.actor.optim.lr=3e-6 actor_rollout_ref.actor.optim.warmup_style=cosine actor_rollout_ref.actor.optim.lr_warmup_steps_ratio=0.1 actor_rollout_ref.model.use_remove_padding=True actor_rollout_ref.actor.ppo_mini_batch_size=64 actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1 actor_rollout_ref.actor.use_kl_loss=True actor_rollout_ref.actor.kl_loss_coef=0.005 actor_rollout_ref.actor.kl_loss_type=low_var_kl actor_rollout_ref.actor.entropy_coeff=0 actor_rollout_ref.model.enable_gradient_checkpointing=True actor_rollout_ref.actor.fsdp_config.param_offload=False actor_rollout_ref.actor.fsdp_config.optimizer_offload=False actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=2 actor_rollout_ref.rollout.name=vllm actor_rollout_ref.rollout.gpu_memory_utilization=0.7 actor_rollout_ref.rollout.n=4 actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=2 actor_rollout_ref.ref.fsdp_config.param_offload=True algorithm.use_kl_in_reward=False trainer.critic_warmup=0 trainer.val_before_train=False trainer.n_gpus_per_node=4 trainer.nnodes=1 'trainer.logger=[console,wandb]' trainer.project_name=verl trainer.experiment_name=math_grpo trainer.save_freq=10 trainer.test_freq=10 trainer.total_epochs=1

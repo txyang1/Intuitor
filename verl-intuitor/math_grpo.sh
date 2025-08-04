@@ -1,8 +1,42 @@
+#!/bin/bash
+#SBATCH --job-name=phi_intuitor
+#SBATCH --output=phi_intuitor.%j.out
+#SBATCH --error=phi_intuitor.%j.err
+#SBATCH --partition=accelerated
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=32
+#SBATCH --gres=gpu:4
+#SBATCH --time=8:00:00
+
 set -x
-unset ROCR_VISIBLE_DEVICES
-export WANDB_API_KEY=7526e35bcef1a5880516f1a32352cd3e6c5a4d8a
+source ~/.bashrc
+unset ROCR_VISIBLE_DEVICES HIP_VISIBLE_DEVICES
+echo "ROCR_VISIBLE_DEVICES='$ROCR_VISIBLE_DEVICES'"
+echo "HIP_VISIBLE_DEVICES='$HIP_VISIBLE_DEVICES'"
+echo "CUDA_VISIBLE_DEVICES='$CUDA_VISIBLE_DEVICES'"
+
+WORKSPACE_DIR="/hkfs/work/workspace/scratch/hgf_teb8892-zt_space"
+export WORKSPACE_DIR="/hkfs/work/workspace/scratch/hgf_teb8892-zt_space"
+mkdir -p "${WORKSPACE_DIR}"
+
+ls -ld /hkfs/work/workspace/scratch/hgf_teb8892-zt_space
+
+chmod u+rwx /hkfs/work/workspace/scratch/hgf_teb8892-zt_space
+
+
 export ACCELERATE_LOG_LEVEL=info
 export HYDRA_FULL_ERROR=1
+export WANDB_DIR=${WORKSPACE_DIR}/wandb_logs
+
+
+cd /home/hk-project-p0022560/hgf_teb8892/Intuitor/verl-intuitor
+conda activate pure
+
+# 创建必要的目录
+mkdir -p ${WANDB_DIR}
+mkdir -p ${WORKSPACE_DIR}/checkpoints
+mkdir -p ${WORKSPACE_DIR}/logs
 
 PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     algorithm.adv_estimator=grpo \
