@@ -90,8 +90,8 @@ if __name__ == "__main__":
     train_dataset = train_dataset.shuffle(seed=args.seed)
     test_dataset = test_dataset.shuffle(seed=args.seed)
 
-    train_dataset.to_parquet(os.path.join(local_dir, "train.parquet"))
-    test_dataset.to_parquet(os.path.join(local_dir, "test.parquet"))
+    train_dataset.to_parquet(os.path.join(local_dir, "train_old.parquet"))
+    test_dataset.to_parquet(os.path.join(local_dir, "test_old.parquet"))
 
     if hdfs_dir is not None:
         makedirs(hdfs_dir)
