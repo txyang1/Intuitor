@@ -263,6 +263,7 @@ def compute_advantage(
         # Initialize the mask for GRPO calculation
         grpo_calculation_mask = data.batch["response_mask"]
         token_level_rewards = data.batch['token_level_rewards']
+        seq_gain = data.batch['seq_gain']  # tx_add seq_gain
         print(f"[DEBUG] token_level_rewards_in_grpo_adv shape = {token_level_rewards.shape}"
               f" values = {token_level_rewards[0].detach().cpu().tolist()}")
         # Call compute_grpo_outcome_advantage with parameters matching its definition
@@ -271,6 +272,11 @@ def compute_advantage(
             response_mask=grpo_calculation_mask,
             index=data.non_tensor_batch["uid"],
             norm_adv_by_std_in_grpo=norm_adv_by_std_in_grpo,
+            reduce="sum",                                # 或 "mean"（更弱的长度偏置）
+            seq_gain=None,                  # [B] 你在采样端聚合好的多步 gain 的均值, None 则表示不使用seq_gain作为权重
+            weight_mode="sigmoid", 
+            weight_temp=1.0, 
+            w_clip=(0.5, 2.0)
         )
         data.batch["advantages"] = advantages
         print(f"[DEBUG] grpo_advantages[0] shape = {advantages[0].shape}, values = {advantages[0].detach().cpu().tolist()}")
@@ -1218,12 +1224,31 @@ class RayPPOTrainer:
                     # repeat to align with repeated responses in rollout
                     batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n, interleave=True)
                     batch = batch.union(gen_batch_output)
-
+                
+                    seq_gain = gen_batch_output.batch['seq_gain']
                     prm = gen_batch_output.batch['prm_reward']  # tx_add prm_reward
                     batch.batch['token_level_scores'] = prm #tx_add 如果使用phi+prm_reward#################################
 
                     if "response_mask" not in batch.batch:
                         batch.batch["response_mask"] = compute_response_mask(batch)
+                    ##########################################################Debug##########################
+                    p_ids = batch.batch["prompts"][0].detach().cpu().tolist()
+
+                    # 只打印有效 response token（用 response_mask 过滤掉 PAD）
+                    resp_ids_all = batch.batch["responses"][0].detach().cpu()
+                    resp_mask    = batch.batch["response_mask"][0].detach().cpu().bool()
+                    r_ids = resp_ids_all[resp_mask].tolist()
+
+                    p_txt = self.tokenizer.decode(p_ids, skip_special_tokens=True)
+                    r_txt = self.tokenizer.decode(r_ids, skip_special_tokens=True)
+
+                    print("\n" + "="*80)
+                    print(f"[SAMPLE@global_step={self.global_steps}]")
+                    print("- PROMPT:\n", p_txt[:800])
+                    print("- RESPONSE:\n", r_txt[:1500])
+                    print("="*80 + "\n")
+                    ##########################################################Debug##########################
+
                     # Balance the number of valid tokens across DP ranks.
                     # NOTE: This usually changes the order of data in the `batch`,
                     # which won't affect the advantage calculation (since it's based on uid),
@@ -1318,6 +1343,8 @@ class RayPPOTrainer:
                             metrics.update(kl_metrics)
                         else:
                             batch.batch["token_level_rewards"] = batch.batch["token_level_scores"]
+
+                        batch.batch["seq_gain"] = seq_gain  # tx_add seq_gain
 
                         # compute advantages, executed on the driver process
 
