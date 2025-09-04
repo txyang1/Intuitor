@@ -241,10 +241,89 @@ def compute_gae_advantage_return(
         advantages = verl_F.masked_whiten(advantages, response_mask)
     return advantages, returns
 
-
+from collections import defaultdict
+import numpy as np
+import torch
 # NOTE(sgm): this implementation only consider outcome supervision, where the reward is a scalar.
 @register_adv_est(AdvantageEstimator.GRPO)  # or simply: @register_adv_est("grpo")
 def compute_grpo_outcome_advantage(
+    token_level_rewards: torch.Tensor,   # [B, L]
+    response_mask: torch.Tensor,         # [B, L]
+    index,                                # [B] 任意可哈希分组id（uuid字符串也行）
+    epsilon: float = 1e-6,
+    norm_adv_by_std_in_grpo: bool = True,
+    reduce: str = "sum",                  # or "mean"
+    seq_gain: torch.Tensor | None = None, # [B]
+    weight_mode: str = "sigmoid",         # "sigmoid" | "exp" | "tanh"
+    weight_temp: float = 1.0,
+    w_clip: tuple[float, float] = (0.5, 2.0),
+):
+    device  = token_level_rewards.device
+    masked  = token_level_rewards * response_mask
+    lengths = response_mask.sum(-1).clamp_min(1.0)
+
+    # 序列分数
+    if reduce == "mean":
+        seq_scores = masked.sum(-1) / lengths
+    else:
+        seq_scores = masked.sum(-1)  # [B]
+
+    # ---- 构造分组索引（不转 int，直接用原始id作键）----
+    if isinstance(index, np.ndarray):
+        gids = index.tolist()
+    else:
+        gids = list(index)
+    group2idxs: dict = defaultdict(list)
+    for i, gid in enumerate(gids):
+        group2idxs[gid].append(i)
+
+    # ---- 组内 z-score → 序列级优势 Â ----
+    adv_seq = torch.empty_like(seq_scores)
+    # pos_scale = 0.01   # 把正优势缩到 1%
+    # neg_scale = 1.0   # 负优势保持
+    # adv_seq = torch.where(adv_seq > 0, pos_scale*adv_seq, neg_scale*adv_seq)
+
+    for gid, idxs in group2idxs.items():
+        idxs_t = torch.as_tensor(idxs, device=device, dtype=torch.long)
+        vals   = seq_scores.index_select(0, idxs_t)
+        m      = vals.mean()
+        s      = vals.std(unbiased=False)
+        if norm_adv_by_std_in_grpo:
+            adv = (vals - m) / (s + epsilon)
+        else:
+            adv = (vals - m)
+        adv_seq.index_copy_(0, idxs_t, adv)
+
+    # ---- 用 seq_gain 做每样本权重（组内均值=1，clip，detach）----
+    if seq_gain is not None:
+        g_all = seq_gain.to(device).detach()
+        w_all = torch.ones_like(seq_scores)
+        for gid, idxs in group2idxs.items():
+            idxs_t = torch.as_tensor(idxs, device=device, dtype=torch.long)
+            gvals  = g_all.index_select(0, idxs_t)
+            gm     = gvals.mean()
+            gs     = gvals.std(unbiased=False)
+            gz     = (gvals - gm) / (gs + epsilon)
+            if weight_mode == "sigmoid":
+                w = torch.sigmoid(gz / max(1e-6, weight_temp))
+            elif weight_mode == "exp":
+                w = torch.exp(gz / max(1e-6, weight_temp))
+            else:  # "tanh"
+                w = 1.0 + torch.tanh(gz / max(1e-6, weight_temp))  # ~[0,2]
+            # 组内把均值拉到1，防整体步长漂移
+            w = w / (w.mean() + 1e-6)
+            w = w.clamp(w_clip[0], w_clip[1])
+            w_all.index_copy_(0, idxs_t, w)
+
+        adv_seq = adv_seq * w_all.detach()
+
+    # 广播到 token 维（序列级同一标量）
+    advantages = adv_seq.unsqueeze(-1) * response_mask
+    returns    = masked
+    return advantages, returns
+
+
+'''def compute_grpo_outcome_advantage(
     token_level_rewards: torch.Tensor,
     response_mask: torch.Tensor,
     index: np.ndarray,
@@ -306,7 +385,7 @@ def compute_grpo_outcome_advantage(
                 scores[i] = scores[i] - id2mean[index[i]]
         scores = scores.unsqueeze(-1) * response_mask
 
-    return scores, scores
+    return scores, scores'''
 
 
 @register_adv_est(AdvantageEstimator.GRPO_PASSK)  # or simply: @register_adv_est("grpo_passk")
