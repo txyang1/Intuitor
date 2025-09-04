@@ -664,7 +664,7 @@ class vLLMRollout(BaseRollout):
     #prm_reward 只含“最终段”的 avg_logprob，早期推理没被学习到
     @GPUMemoryLogger(role="vllm rollout spmd", logger=logger)
     @torch.no_grad()
-    def generate_sequences(self, prompts: DataProto, **kwargs) -> DataProto:
+    def generate_sequences(self, prompts: DataProto, **kwargs) -> DataProto: 
         # 0. Ensure non_tensor_batch exists and raw_prompt_ids are set
         non_tensor_batch = prompts.non_tensor_batch or {}
         prompts.non_tensor_batch = non_tensor_batch
@@ -696,6 +696,26 @@ class vLLMRollout(BaseRollout):
         response_len      = int(kwargs.get("response_length",      self.config.response_length))
         mix_lambda        = float(kwargs.get("mix_lambda",         self.config.mix_lambda))
 
+        # === PRM 使用 gain 的开关与分配策略 ===
+        prm_mode = str(kwargs.get("prm_mode", "gain"))  # "gain" | "lcf"
+        prm_gain_scale = float(kwargs.get("prm_gain_scale", 1.0))
+
+        reward_spread_mode  = str(kwargs.get("reward_spread", "last"))   # "exp" | "uniform" | "linear" | last
+        reward_spread_gamma = float(kwargs.get("spread_gamma", 0.95))
+
+        # reward_spread_mode   = str(kwargs.get("reward_spread", "exp"))      # "exp" | "uniform" | "linear"
+        # reward_spread_gamma  = float(kwargs.get("spread_gamma", 0.95))      # 仅对 exp 生效
+        # final_spread_mode    = str(kwargs.get("final_reward_spread", reward_spread_mode))
+        # final_spread_gamma   = float(kwargs.get("final_spread_gamma", reward_spread_gamma))
+
+        # === LCF（只用于 prm_reward）参数 ===
+        lcf_mode    = str(kwargs.get("lcf_mode", "mean"))   # "focal" | "sigmoid" | "mean" = 保留原始均值
+        lcf_gamma   = float(kwargs.get("lcf_gamma", 1.5))
+        lcf_q       = float(kwargs.get("lcf_q", 0.30))       # 分位数（建议训练中退火到 0.15）
+        lcf_lambda  = float(kwargs.get("lcf_lambda", 0.30))  # sigmoid 温度
+        lcf_fallback_zero = bool(kwargs.get("lcf_fallback_zero", True))  # 无低置信时r_hat置0
+
+
         # 3. Decode prompts
         raw_prompts = self.tokenizer.batch_decode(idx0, skip_special_tokens=True)
 
@@ -707,6 +727,21 @@ class vLLMRollout(BaseRollout):
             n=num_rollout,
             stop=["\n", "<end_of_reasoning>"]
         )
+        
+
+        # === 新增：二阶段“补全”用的采样参数（看一眼再决定用）===0831
+        # 若未传入，默认与 step_response_len 相同；你也可以改成 step_response_len // 2 以省算力
+        step_completion_len = int(kwargs.get("step_completion_length", step_response_len//2))
+        comp_sp = SamplingParams(
+            max_tokens=step_completion_len,
+            logprobs=1,
+            temperature=temperature,
+            n=1,
+            stop=["<end_of_reasoning>"]
+            )
+        import numpy as np
+        import itertools
+        import torch
 
         def _stable_softmax(x, T=1.0):
             x = np.asarray(x, dtype=np.float32)
@@ -718,12 +753,190 @@ class vLLMRollout(BaseRollout):
                 return np.full_like(p, 1.0 / len(p))
             return p / s
 
+        def _extract_chosen_token_logprobs(one_output) -> list:
+            """
+            从 vLLM 的单个 output 中提取“已选 token”的逐步 logprob。
+            兼容：
+            - one_output.token_logprobs: List[float]
+            - one_output.logprobs: List[Dict[token_id -> Logprob or float]]
+            - one_output.logprobs: List[List[Logprob-like or (id, logprob) 元组]]
+            若无法可靠提取，则用 cumulative_logprob / T 兜底。
+            """
+            import numpy as np
+
+            token_ids = getattr(one_output, "token_ids", None) or []
+            L = len(token_ids)
+            if L == 0:
+                return []
+
+            # 1) 最简单：直接有逐步 logprob 列表
+            tlp = getattr(one_output, "token_logprobs", None)
+            if tlp is not None and len(tlp) == L:
+                # 确保可转为 float
+                out = []
+                for v in tlp:
+                    try:
+                        out.append(float(v))
+                    except Exception:
+                        out.append(float("-10.0"))
+                return out
+
+            # 工具：把各种对象取成 float logprob
+            def _as_float_lp(x):
+                # 直接数值
+                if isinstance(x, (int, float, np.floating)):
+                    return float(x)
+                # vLLM 的 Logprob 类：有 .logprob 字段
+                lp = getattr(x, "logprob", None)
+                if lp is not None:
+                    try:
+                        return float(lp)
+                    except Exception:
+                        pass
+                # 可能是 (token_id, logprob) 或类似二元组
+                if isinstance(x, (list, tuple)) and len(x) >= 2:
+                    try:
+                        return float(x[1])
+                    except Exception:
+                        pass
+                return None
+
+            # 2) 通用：逐步候选的结构
+            lps = getattr(one_output, "logprobs", None)
+            if lps is not None and len(lps) == L:
+                chosen = []
+                for t in range(L):
+                    entry = lps[t]
+                    tok_id = token_ids[t]
+                    lp_val = None
+
+                    if isinstance(entry, dict):
+                        obj = entry.get(tok_id, None)
+                        if obj is not None:
+                            lp_val = _as_float_lp(obj)
+                        # 若没找到精确 token_id，遍历 values，优先匹配 token_id，其次取最大 logprob
+                        if lp_val is None:
+                            best_lp = None
+                            best_lp_val = None
+                            for obj2 in entry.values():
+                                # 若对象带 token_id 且匹配，直接用
+                                cand_id = getattr(obj2, "token_id", None)
+                                cand_lp = _as_float_lp(obj2)
+                                if cand_id == tok_id and cand_lp is not None:
+                                    lp_val = cand_lp
+                                    break
+                                # 否则保留一个最大 cand_lp 作为兜底
+                                if cand_lp is not None and (best_lp is None or cand_lp > best_lp):
+                                    best_lp = cand_lp
+                                    best_lp_val = cand_lp
+                            if lp_val is None and best_lp_val is not None:
+                                lp_val = best_lp_val
+
+                    elif isinstance(entry, (list, tuple)):
+                        # 候选列表：找 token_id 匹配的，否则取最大 logprob
+                        best_lp = None
+                        for obj in entry:
+                            cand_id = getattr(obj, "token_id", None)
+                            cand_lp = _as_float_lp(obj)
+                            if cand_id == tok_id and cand_lp is not None:
+                                lp_val = cand_lp
+                                break
+                            if cand_lp is not None and (best_lp is None or cand_lp > best_lp):
+                                best_lp = cand_lp
+                        if lp_val is None and best_lp is not None:
+                            lp_val = best_lp
+
+                    # 最后兜底：用平均 logprob
+                    if lp_val is None or not np.isfinite(lp_val):
+                        lp_val = float(getattr(one_output, "cumulative_logprob", -10.0)) / (L + 1e-8)
+
+                    chosen.append(float(lp_val))
+                return chosen
+
+            # 3) 最差兜底：均匀平均
+            avg = float(getattr(one_output, "cumulative_logprob", -10.0)) / (L + 1e-8)
+            return [avg] * L
+
+
+        # === LCF：基于逐token logprob 计算 r_hat（只用于 prm_reward）===
+        def _lcf_weighted_mean_from_logprobs(lp_list: list) -> float:
+            """
+            计算 LCF 加权均值（用于 prm_reward）。新增 lcf_mode:
+            - "raw" / "plain" / "none": 不做软掩码，直接返回未加权的 lp 均值
+            - "focal":    w = (1 - p)**gamma
+            - "sigmoid":  w = sigmoid((tau - lp)/lambda)
+
+            返回:
+            float 标量（与旧版一致）
+            """
+            if not lp_list:
+                return 0.0
+
+            lp = np.asarray(lp_list, dtype=np.float32)
+
+            # --- 新增：保留原始 lp 均值 ---
+            if lcf_mode in ("raw", "mean", "none"):
+                return float(lp.mean())
+
+            # --- 原有两种软掩码 ---
+            if lcf_mode == "focal":
+                p = np.clip(np.exp(lp), 1e-6, 1.0 - 1e-6)
+                w = (1.0 - p) ** float(lcf_gamma)
+            elif lcf_mode == "sigmoid":
+                tau = float(np.quantile(lp, lcf_q))
+                w = 1.0 / (1.0 + np.exp((lp - tau) / max(1e-6, float(lcf_lambda))))
+            else:
+                # 未知模式时退化为原始均值（更安全）
+                return float(lp.mean())
+
+            denom = float(w.sum())
+            if denom <= 1e-12:
+                # 没有有效权重时：按你的开关决定返回 0 或原始均值
+                return 0.0 if lcf_fallback_zero else float(lp.mean())
+            return float((w * lp).sum() / denom)
+
+        def _spread_segment_reward(total_reward: float,
+                                L: int,
+                                w: float = 1.0,
+                                mode: str = "exp",        # "exp" | "uniform" | "linear" | "last"
+                                gamma: float = 0.95) -> list:
+            """
+            把整段的奖励 total_reward * w 按照指定模式分配到段内 L 个 token 上。
+            返回长度为 L 的 list，且 sum(seg) == total_reward * w。
+            """
+            if L <= 0:
+                return []
+            R = float(total_reward) * max(float(w), 0.0)
+            if mode == "last":
+                # 原始版本：不衰减、不摊分，全部堆到最后一个 token
+                return [0.0] * (L - 1) + [float(R)]
+
+            if mode == "uniform":
+                v = R / L
+                return [float(v)] * L
+
+            if mode == "linear":
+                coeffs = np.arange(1, L + 1, dtype=np.float32)  # 1,2,...,L
+            else:
+                coeffs = (gamma ** np.arange(L - 1, -1, -1, dtype=np.float32))  # L-1,...,0
+
+            s = float(coeffs.sum())
+            if s <= 1e-12:
+                return [0.0] * L
+            coeffs = coeffs / s
+            return list((R * coeffs).astype(np.float32))
+
         # 5. Initialize beam histories
         prev_steps      = [["" for _ in range(beam_size)] for _ in range(bs0)]
-        prev_values     = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]  # 平均logprob基线
-        weights_history = [[[] for _ in range(beam_size)] for _ in range(bs0)]   # 存每段最后token的“选择概率”
-        #weights_pulse_history = [[[] for _ in range(beam_size)] for _ in range(bs0)]  # ← 新增：只存 w_t 的脉冲 817
+        prev_values     = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]  # 平均logprob基线（保持原样）
+        weights_history = [[[] for _ in range(beam_size)] for _ in range(bs0)]   # 存每段最后token的“奖励脉冲”
         prev_gains      = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]
+        gain_history    = [[[] for _ in range(beam_size)] for _ in range(bs0)]  # 记录每条beam的step-gain轨迹
+
+        # --- 放在 num_foresight 外层超参里（可选开关与打印频率） ---
+        debug_prune = bool(kwargs.get("debug_prune", True))
+        debug_prune_every = int(kwargs.get("debug_prune_every", 1))  # 每多少个 depth 打一次
+
         # 6. Multi-step foresight
         for depth in range(num_foresight):
             step_inputs = []
@@ -744,173 +957,275 @@ class vLLMRollout(BaseRollout):
                 use_tqdm=False
             )
 
-            all_resp, all_lp = [], []
+            all_resp, all_lp, all_rhat = [], [], []  # === 新增 all_rhat：仅用于 prm_reward ===
             for out in outs:
                 for o in out.outputs:
                     txt = o.text.strip()
-                    lp  = o.cumulative_logprob / (len(o.token_ids) + 1e-8)  # 平均logprob
+                    lp  = o.cumulative_logprob / (len(o.token_ids) + 1e-8)  # 平均logprob（用于搜索/剪枝/adv）
+                    # === 仅用于 prm_reward 的 r_hat ===
+                    lp_list = _extract_chosen_token_logprobs(o)
+                    r_hat   = _lcf_weighted_mean_from_logprobs(lp_list)
+
                     all_resp.append(txt)
                     all_lp.append(lp)
+                    all_rhat.append(r_hat)
 
-            # compute advantage per beam rollout
+            # compute advantage per beam rollout（仍基于 lp 与 prev_values）
             all_adv = []
             for b in range(bs0):
                 for k in range(beam_size):
                     start = (b * beam_size + k) * num_rollout
                     prev_v = prev_values[b][k]
                     for j in range(num_rollout):
-                        all_adv.append(all_lp[start + j] - prev_v)  # 动态增益
+                        all_adv.append(all_lp[start + j] - prev_v)  # 动态增益（不改）
 
             new_steps   = [["" for _ in range(beam_size)] for _ in range(bs0)]
             new_values  = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]
             new_weights = [[[] for _ in range(beam_size)] for _ in range(bs0)]
             new_gains   = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]
-            #new_weights_pulse_history = [[[] for _ in range(beam_size)] for _ in range(bs0)] # ← 新增：只存 w_t 的脉冲 817
+            new_gain_history  = [[[] for _ in range(beam_size)] for _ in range(bs0)]
 
+            # === Debug 累计器（本 depth 内聚合） ===
+            kept_pre_cnt = 0      # 剪枝前保留数量（按阈）
+            kept_post_cnt = 0     # 补足后保留数量
+            total_cnt = 0         # 总候选数
+            supplemented_cnt = 0  # 通过 softmax pool 补上的个数
+            ########################################
+            comp_inputs_all, meta = [], []  # meta 记录 (b, origin) 方便回填
             for b in range(bs0):
                 start = b * beam_size * num_rollout
                 end   = start + beam_size * num_rollout
-                lp_slice   = np.array(all_lp[start:end],  dtype=np.float32)
-                adv_slice  = np.array(all_adv[start:end], dtype=np.float32)
+                lp_slice   = np.array(all_lp[start:end],    dtype=np.float32)  # 仍用 lp 做筛选/打分
+                adv_slice  = np.array(all_adv[start:end],   dtype=np.float32)
+                rhat_slice = np.array(all_rhat[start:end],  dtype=np.float32)  # 仅用于 prm_reward
                 resp_slice = all_resp[start:end]
 
-                # low-sigma width pruning（用 adv_slice 做门限也OK）
-                # mu, sigma = float(adv_slice.mean()), float(adv_slice.std())
-                # keep = [i for i, v in enumerate(adv_slice) if v > mu - sigma_rate * sigma]
+                # low-sigma width pruning（用 lp_slice）
                 mu, sigma = float(lp_slice.mean()), float(lp_slice.std())
                 keep = [i for i, v in enumerate(lp_slice) if v > mu - sigma_rate * sigma]
-                # 补足：从补集按adv概率抽，避免重复
-                # if len(keep) < beam_size:
-                #     pool = np.setdiff1d(np.arange(len(adv_slice)), np.array(keep), assume_unique=False)
-                #     if len(pool) > 0:
-                #         p_pool = _stable_softmax(adv_slice[pool], temperature)
-                #         extra = np.random.choice(pool, beam_size - len(keep), replace=False, p=p_pool).tolist()
-                #         keep += extra
-                # keep = sorted(set(keep))
-                if len(keep) < beam_size: #按照绝对似然补足222
+                keep_num = list(keep)  # 拷贝一份再做补足
+                # --- 统计（剪枝前） ---
+                N = len(lp_slice)
+                total_cnt += N
+                kept_pre_cnt += len(keep)
+
+                if len(keep) < beam_size: # 按照绝对似然补足
                     pool = np.setdiff1d(np.arange(len(lp_slice)), np.array(keep), assume_unique=False)
                     if len(pool) > 0:
                         p_pool = _stable_softmax(lp_slice[pool], temperature)
                         extra = np.random.choice(pool, beam_size - len(keep), replace=False, p=p_pool).tolist()
                         keep += extra
+                        # --- 统计（补足数量） ---
+                        supplemented_cnt += len(extra)
+                # --- 统计（补足后） ---
+                kept_post_cnt += len(keep)
 
-                # # 候选集合
-                # adv_k = adv_slice[keep]                # 动态增益
-                # abs_k = lp_slice[keep]                 # 绝对似然（平均logprob）
 
-                # # 计算混合权重（已归一化的概率）
-                # C_abs  = _stable_softmax(abs_k, temperature)
-                # C_gain = _stable_softmax(adv_k, temperature)
-                # combined = mix_lambda * C_abs + (1.0 - mix_lambda) * C_gain
-                # combined = combined.astype(np.float32)
-                # combined = (combined + 1e-12) / (combined.sum() + 1e-12)
+                # === 对 keep 中所有候选先做一次“补全”，得到 post-completion 的 lp2 与 adv2 ===
+                comp_inputs   = []
+                origins_keep  = []
+                resps_keep    = []
+                rhat_keep     = []
 
-                # # 采样 beam_size 个候选
-                # sel = np.random.choice(len(keep), size=beam_size, replace=False, p=combined)
+                for kk in keep:
+                    origin = kk // num_rollout
+                    resp   = resp_slice[kk]
+                    rhat   = float(rhat_slice[kk])  # 只用于 prm_reward 段末脉冲
 
-                # 取分数
-                abs_k = lp_slice[keep]        # 平均 log-prob (可负)
-                adv_k = adv_slice[keep]       # 动态优势 (可正可负)
-
-                # z-score 标准化，避免量纲不一致
-                def zscore(x, eps=1e-8):
-                    return (x - x.mean()) / (x.std() + eps)
-
-                z_abs  = zscore(abs_k)
-                z_gain = zscore(adv_k)
-
-                w_raw  = 1.0 / (1.0 + np.exp(-z_gain / 1.0))   # = sigmoid(z_gain)
-                # 可分开调温度（不想分就都用 temperature）
-                tau_abs  = float(kwargs.get("tau_abs",  temperature))
-                tau_gain = float(kwargs.get("tau_gain", temperature))
-                lam = float(kwargs.get("mix_lambda", 0.6))
-
-                # 在 logit 空间混合
-                logits = lam * (z_abs / tau_abs) + (1 - lam) * (z_gain / tau_gain)
-
-                # 一次 softmax 得到最终分布
-                combined = _stable_softmax(logits, temperature)
-                sel = np.random.choice(len(keep), size=beam_size, replace=False, p=combined)
-
-                # 更新
-                for k_idx, sel_idx in enumerate(sel):
-                    origin = keep[sel_idx] // num_rollout
-                    resp   = resp_slice[keep[sel_idx]]
-                    p_sel  = float(combined[sel_idx])   # ← 记录被选候选的组合概率
-
-                    tok_ids = self.inference_engine.llm_engine.tokenizer.encode(
-                        resp, add_special_tokens=False
+                    comp_prefix = (
+                        f"User: {raw_prompts[b].strip()}\n"
+                        f"Reasoning so far:\n{prev_steps[b][origin]}{resp}"
                     )
-                    # step_reward = float(abs_k[sel_idx]) # 可为负，正常###222
-                    # seg = [0.0] * (len(tok_ids)-1) + [step_reward]###222
-                    # —— 中间步：给每一步折扣 w_t，再把 avg log-prob 写在段末 —— 
-                    #w_t = max(float(adv_k[sel_idx]), 0.0)          # ReLU on gain
-                    
-                    w_t = float(w_raw[sel_idx])# sigmoid(z_gain[sel_idx]) # 0-1 范围内的权重
+                    ids = self.inference_engine.llm_engine.tokenizer.encode(
+                        comp_prefix, add_special_tokens=False
+                    )
+                    comp_inputs_all.append({"prompt_token_ids": ids})
+                    meta.append((b, origin, resp, float(rhat_slice[kk])))
+                    comp_inputs.append({"prompt_token_ids": ids})
+                    origins_keep.append(origin)
+                    resps_keep.append(resp)
+                    rhat_keep.append(rhat)
 
-                    step_reward = float(abs_k[sel_idx])              # 平均 log-prob
-                    seg = [0.0] * (len(tok_ids) - 1) + [w_t * step_reward]
-                    #seg_w = [0.0] * (len(tok_ids) - 1) + [w_t]                # ← 新增：权重脉冲 817
-        
-                    #seg = [0.0] * len(tok_ids)##############################################
+            # —— 一次性调用 vLLM 生成 —— 
+            comp_outs_all = self.inference_engine.generate(
+                prompts=comp_inputs_all, sampling_params=comp_sp, use_tqdm=False
+            )
+
+            # —— 把结果按 b 分桶，计算 lp2/adv2，并在各自 b 内做选样 —— 
+            cursor = 0
+            buckets = {b: {"lp2": [], "adv2": [], "origin": [], "resp": [], "rhat": []} for b in range(bs0)}
+            for i, out in enumerate(comp_outs_all):
+                o = out.outputs[0]
+                L = len(o.token_ids)
+                lp2 = float(o.cumulative_logprob) / (L + 1e-8) if L > 0 else -10.0
+                b, origin, resp, rhat = meta[i]
+                adv2 = lp2 - float(prev_values[b][origin])
+                bk = buckets[b]
+                bk["lp2"].append(lp2); bk["adv2"].append(adv2)
+                bk["origin"].append(origin); bk["resp"].append(resp); bk["rhat"].append(rhat)
+
+            # —— 对每个 b：用 lp2/adv2 做 zscore + softmax 选 beam_size 个，并更新 new_* —— 
+            for b in range(bs0):
+                if not buckets[b]["lp2"]: continue
+                abs2_k = np.asarray(buckets[b]["lp2"], dtype=np.float32)
+                adv2_k = np.asarray(buckets[b]["adv2"], dtype=np.float32)
+                z_abs2 = (abs2_k - abs2_k.mean()) / (abs2_k.std() + 1e-8)
+                z_gain2= (adv2_k - adv2_k.mean()) / (adv2_k.std()+ 1e-8)
+                logits = z_gain2 
+                combined = _stable_softmax(logits, temperature)
+                sel = np.random.choice(len(abs2_k), size=beam_size, replace=False, p=combined)
+
+                for k_idx, sel_idx in enumerate(sel):
+                    origin = buckets[b]["origin"][sel_idx]
+                    resp   = buckets[b]["resp"][sel_idx]
+                    rhat   = buckets[b]["rhat"][sel_idx]
+                    lp2    = float(abs2_k[sel_idx])
+                    adv2   = float(adv2_k[sel_idx])
+
+                    tok_ids = self.inference_engine.llm_engine.tokenizer.encode(resp, add_special_tokens=False)
+                    #seg = [0.0]*(len(tok_ids)-1) + ([rhat] if len(tok_ids)>0 else [])
+                    if prm_mode == "gain":
+                        # 用 adv2 作为本段奖励，并按策略分配到段内 token
+                        seg = _spread_segment_reward(
+                            total_reward = prm_gain_scale * adv2,
+                            L            = len(tok_ids),
+                            mode         = reward_spread_mode,
+                            gamma        = reward_spread_gamma
+                        )
+                    else:
+                        # 兼容旧逻辑（LCF 均值 logprob 作为段尾脉冲）
+                        seg = [0.0]*(len(tok_ids)-1) + ([rhat] if len(tok_ids)>0 else [])
+
                     new_weights[b][k_idx] = weights_history[b][origin] + seg
+
                     new_steps[b][k_idx]   = prev_steps[b][origin] + resp + "\n"
-                    new_values[b][k_idx]  = float(lp_slice[keep[sel_idx]])  # 更新基线
+                    new_values[b][k_idx]  = lp2
+                    new_gains[b][k_idx]   = adv2
+                    new_gain_history[b][k_idx] = gain_history[b][origin] + [adv2]
 
-                    new_gains[b][k_idx] = float(adv_slice[keep[sel_idx]])
 
-                    #new_weights_pulse = weights_pulse_history[b][origin] + seg_w  # 新增：脉冲 817
-                    
+
             prev_steps, prev_values, weights_history = new_steps, new_values, new_weights
             prev_gains = new_gains  # 更新增益
-            #weights_pulse_history = new_weights_pulse_history   # ← 新增 817
+            gain_history = new_gain_history
+
+            # === depth 级别的调试输出（可按 debug_prune_every 控制频率） ===
+            if debug_prune and (depth % max(1, debug_prune_every) == 0):
+                ratio_pre  = (kept_pre_cnt  / total_cnt) if total_cnt > 0 else 0.0
+                ratio_post = (kept_post_cnt / total_cnt) if total_cnt > 0 else 0.0
+                print(f"[PRUNE-DEBUG] depth={depth} "
+                    f"keep_pre={kept_pre_cnt}/{total_cnt} ({ratio_pre:.2%}), "
+                    f"keep_post={kept_post_cnt}/{total_cnt} ({ratio_post:.2%}), "
+                    f"supplemented={supplemented_cnt}, "
+                    f"beam_size={beam_size}, num_rollout={num_rollout}")
 
         # 7. Final answer generation — 用 prev_values 的 abs+gain 计算 combined 采样 beam，并写入其概率
         final_prompts, history_list, final_ws, final_probs = [], [], [], []
-        #final_wu = []   # ← 新增 817
+        final_gain_hists, seq_gain_list = [], [] 
+        # for b in range(bs0):
+        #     L = np.array(prev_values[b], dtype=np.float32)  # 平均 logprob（绝对置信度）
+        #     G = np.array(prev_gains[b],  dtype=np.float32)  # 真正的动态增益
+
+        #     def zscore(x, eps=1e-8):
+        #         s = x.std()
+        #         return (x - x.mean()) / (s + eps)
+
+        #     zL = zscore(L)
+        #     zG = zscore(G)  
+
+        #     tau_abs  = float(kwargs.get("tau_abs",  temperature))
+        #     tau_gain = float(kwargs.get("tau_gain", temperature))
+        #     lam      = float(kwargs.get("mix_lambda", 0.6))
+
+        #     logits = lam * (zL / tau_abs) + (1.0 - lam) * (zG / tau_gain)
+        #     combined_beam = _stable_softmax(logits, temperature)
+
+        #     # 采样
+        #     choice   = int(np.random.choice(len(combined_beam), p=combined_beam))
+        #     p_choice = float(combined_beam[choice])  # 被选中的组合概率
+
+        #     history_list.append(prev_steps[b][choice])
+        #     final_ws.append(weights_history[b][choice])
+        #     final_probs.append(p_choice)
+        #     final_gain_hists.append(gain_history[b][choice])
+
+        #     # ★ 新增：记录该 prompt 进入最终阶段时的 baseline（均值 logprob 基线）
+        #     #    就是 prev_values[b][choice]
+        #     if 'final_baselines' not in locals():
+        #         final_baselines = []
+        #     final_baselines.append(float(prev_values[b][choice]))
+
+        #     prompt_txt = (
+        #         f"User: {raw_prompts[b].strip()}\n"
+        #         f"Reasoning so far:\n{prev_steps[b][choice]}"
+        #     )
+        #     ids = self.tokenizer.encode(prompt_txt, add_special_tokens=False)
+        #     final_prompts.append({"prompt_token_ids": ids})
+        final_baselines = []
+
+        # 可选：单独给最终一步一个更短的补全长度，默认复用 comp_sp
+        final_step_completion_len = int(kwargs.get("final_step_completion_length",
+                                                128))
+        final_comp_sp = SamplingParams(
+            max_tokens=final_step_completion_len,
+            logprobs=1,
+            temperature=temperature,
+            n=1,
+            stop=["<end_of_reasoning>"],
+        )
+
         for b in range(bs0):
-            # L = np.array(prev_values[b], dtype=np.float32)   # abs: 平均logprob
-            # G = L - L.mean()                                 # gain: centered advantage
+            # 对当前 b 的每个 beam 做一次“短补全”来打分
+            comp_inputs = []
+            for k in range(beam_size):
+                prefix = (
+                    f"User: {raw_prompts[b].strip()}\n"
+                    f"Reasoning so far:\n{prev_steps[b][k]}"
+                )
+                ids = self.inference_engine.llm_engine.tokenizer.encode(
+                    prefix, add_special_tokens=False
+                )
+                comp_inputs.append({"prompt_token_ids": ids})
 
-            # C_abs  = _stable_softmax(L, temperature)
-            # C_gain = _stable_softmax(G, temperature)
-            # combined_beam = mix_lambda * C_abs + (1.0 - mix_lambda) * C_gain
-            # combined_beam = (combined_beam + 1e-12) / (combined_beam.sum() + 1e-12)
+            comp_outs = self.inference_engine.generate(
+                prompts=comp_inputs,
+                sampling_params=final_comp_sp,
+                use_tqdm=False
+            )
 
-            # choice = int(np.random.choice(len(combined_beam), p=combined_beam))
-            # p_choice = float(combined_beam[choice])          # ← 选中beam的组合概率
+            # 计算“补全后的均值 logprob”和对应的增益 adv2_final
+            lp2_k, adv2_k = [], []
+            for k, out in enumerate(comp_outs):
+                o = out.outputs[0]
+                L = len(o.token_ids)
+                lp2 = float(o.cumulative_logprob) / (L + 1e-8) if L > 0 else -10.0
+                lp2_k.append(lp2)
+                adv2_k.append(lp2 - float(prev_values[b][k]))
 
-            # history_list.append(prev_steps[b][choice])
-            # final_ws.append(weights_history[b][choice])
-            # final_probs.append(p_choice)
+            abs2_k = np.asarray(lp2_k, dtype=np.float32)
+            adv2_k = np.asarray(adv2_k, dtype=np.float32)
+            z_abs2  = (abs2_k - abs2_k.mean()) / (abs2_k.std()  + 1e-8)
+            z_gain2 = (adv2_k - adv2_k.mean()) / (adv2_k.std() + 1e-8)
 
-            L = np.array(prev_values[b], dtype=np.float32)  # 平均 logprob（绝对置信度）
-            #G = L - L.mean()                                # 动态增益的近似（中心化）
-            G = np.array(prev_gains[b],  dtype=np.float32) #真正的动态增益###222
+            # 只用增益 or 混合打分，默认只用增益更稳
+            if bool(kwargs.get("final_use_gain_only", True)):
+                logits = z_gain2
+            else:
+                tau_abs  = float(kwargs.get("tau_abs",  temperature))
+                tau_gain = float(kwargs.get("tau_gain", temperature))
+                lam      = float(kwargs.get("mix_lambda", mix_lambda))
+                logits   = lam * (z_abs2 / max(1e-8, tau_abs)) + (1.0 - lam) * (z_gain2 / max(1e-8, tau_gain))
 
-            def zscore(x, eps=1e-8):
-                s = x.std()
-                return (x - x.mean()) / (s + eps)
-
-            zL = zscore(L)
-            zG = zscore(G)  
-
-            tau_abs  = float(kwargs.get("tau_abs",  temperature))
-            tau_gain = float(kwargs.get("tau_gain", temperature))
-            lam      = float(kwargs.get("mix_lambda", 0.6))
-
-            # 在 logit 空间线性混合，再做一次 softmax
-            logits = lam * (zL / tau_abs) + (1.0 - lam) * (zG / tau_gain)
-            combined_beam = _stable_softmax(logits,temperature)  # 已经分开控温了
-
-            # 采样
+            combined_beam = _stable_softmax(logits, temperature)
             choice   = int(np.random.choice(len(combined_beam), p=combined_beam))
-            p_choice = float(combined_beam[choice])  # 被选中的组合概率
+            p_choice = float(combined_beam[choice])
 
+            # 记录被选中的轨迹与基线，用于之后 final_adv 计算与最终生成
             history_list.append(prev_steps[b][choice])
             final_ws.append(weights_history[b][choice])
-            #final_wu.append(weights_pulse_history[b][choice])       # ← 新增：权重脉冲 817
             final_probs.append(p_choice)
+            final_gain_hists.append(gain_history[b][choice])
+            final_baselines.append(float(prev_values[b][choice]))
 
             prompt_txt = (
                 f"User: {raw_prompts[b].strip()}\n"
@@ -920,7 +1235,7 @@ class vLLMRollout(BaseRollout):
             final_prompts.append({"prompt_token_ids": ids})
         
 
-        # # 8. Generate final sequences
+        # 8. Generate final sequences
         final_sp = SamplingParams(
             max_tokens=response_len,
             logprobs=1,                # 必须开，后面要用 logprob
@@ -934,55 +1249,116 @@ class vLLMRollout(BaseRollout):
             use_tqdm=False
         )
 
+        import numpy as np
+        ############# seq gain 计算函数 #############
+        ############# 越稳越好 ####################
+        def _seq_gain_pos_neg(
+            gh,
+            w_pos=1.0,         # 正增益权重：鼓励稳定上升
+            w_neg=1.0,         # 负增益权重：显式惩罚回撤（>= w_pos 会更保守）
+            var_coef=0.10,     # 振荡惩罚（对 gain 方差的系数）
+            dd_coef=0.15,      # （可选）回撤面积惩罚：抑制“先跌后涨”
+            second_diff_coef=0.0,  # （可选）二阶差分（加速度）的方差惩罚，进一步抑制抖动
+        ):
+            """
+            gh: list[float]，每步 gain = φ_t - φ_{t-1}（φ=mean logprob）
+            返回：一个单调反映“越稳越好”的标量，供 compute_grpo_outcome_advantage 做组内 z-score + 映射
+            """
+            if len(gh) == 0:
+                return 0.0
 
-        # 9. Parse final outputs；在最终段落的最后一个 token 写入 p_choice
+            gh = np.asarray(gh, dtype=np.float32)
+
+            # 1) 正/负增益分解
+            pos = float(np.sum(np.clip(gh,  0.0, None)))
+            neg = float(np.sum(np.clip(-gh, 0.0, None)))
+
+            # 2) 振荡惩罚（方差）
+            var_pen = float(np.var(gh)) if gh.size > 1 else 0.0
+
+            # 3) （可选）回撤面积惩罚：对累计轨迹 φ 的“低于历史峰值”的面积做惩罚
+            #    这能抑制“先刻意跌、再猛涨”的刷分行为
+            phi = np.cumsum(gh)                 # φ_t - φ_0
+            peak = np.maximum.accumulate(phi)   # 历史峰值
+            drawdown = np.maximum(0.0, peak - phi)
+            dd_area = float(np.sum(drawdown))   # 回撤面积
+
+            # 4) （可选）二阶差分方差：进一步抑制高频抖动（默认关）
+            if second_diff_coef > 0.0 and gh.size > 2:
+                second_diff_var = float(np.var(np.diff(gh, n=2)))
+            else:
+                second_diff_var = 0.0
+
+            score = (w_pos * pos
+                    - w_neg * neg
+                    - var_coef * var_pen
+                    - dd_coef * dd_area
+                    - second_diff_coef * second_diff_var)
+            return score
+
+
+        # 9. Parse final outputs；在最终段落的最后一个 token 写入 LCF r_hat_final
         full_texts, padded_ws = [], []
-        #padded_wu = []  # ← 新增：权重脉冲 817
         for i, out in enumerate(final_outs):
-            gen = out.outputs[0].text.strip()
+            o = out.outputs[0]
+            gen = o.text.strip()
             full = history_list[i] + gen
             full_texts.append(full)
             tok_ids = self.tokenizer.encode(gen, add_special_tokens=False)
-            # p = final_probs[i]###222
-            # seg = [0.0] * (len(tok_ids) - 1) + [p]###222
-            ########################################
-            # 平均 log-prob（行为策略），等价于 -NLL_avg；vLLM已开 logprobs=1
-            lp_avg = out.outputs[0].cumulative_logprob / (len(out.outputs[0].token_ids)+1e-8)
-            seg = [0.0] * (len(tok_ids) - 1) + [lp_avg]
-            #seg_w = [0.0] * (len(tok_ids) - 1) + [3.0] # ← 新增：最终段权重=1.0 脉冲 817
+
+            # # === 仅 prm_reward：最后段落用软掩码 r_hat_final ===
+            # lp_list = _extract_chosen_token_logprobs(o)
+            # r_hat_final = _lcf_weighted_mean_from_logprobs(lp_list)
+            # seg = [0.0] * (len(tok_ids) - 1) + [r_hat_final]
+
+            # padded_ws.append(final_ws[i] + seg)
+
+            L = len(o.token_ids)
+            mean_lp_final = float(o.cumulative_logprob) / (L + 1e-8) if L > 0 else -10.0
+            baseline = float(final_baselines[i])
+            final_adv = mean_lp_final - baseline   # ★ 最终段的增益
+
+            if prm_mode == "gain":
+                seg = _spread_segment_reward(
+                    total_reward = prm_gain_scale * final_adv,
+                    L            = len(tok_ids),
+                    mode         = reward_spread_mode,
+                    gamma        = reward_spread_gamma
+                )
+            else:
+                # 兼容旧逻辑
+                lp_list = _extract_chosen_token_logprobs(o)
+                r_hat_final = _lcf_weighted_mean_from_logprobs(lp_list)
+                seg = [0.0] * (len(tok_ids) - 1) + [r_hat_final]
+
             padded_ws.append(final_ws[i] + seg)
-            #padded_wu.append(final_wu[i] + seg_w)          # ← 新增：权重脉冲拼起来 817
-            ########################################
+
+            gh = final_gain_hists[i]
+            sg = _seq_gain_pos_neg(
+                gh,
+                w_pos=1.0,
+                w_neg=1.0,       # 想更保守可设 1.2~1.5
+                var_coef=0.10,   # 0.05~0.15 常用
+                dd_coef=0.15,    # 0.10~0.30 常用；更重视“别回撤”就调大
+                second_diff_coef=0.0  # 如仍抖可设 0.02~0.05
+            ) if len(gh) > 0 else 0.0
+            seq_gain_list.append(float(sg))
+            #seq_gain_list.append(float(np.mean(gh)) if len(gh) > 0 else 0.0) # 求gain均值（旧版）
 
         full_ids = [self.tokenizer.encode(t, add_special_tokens=False) for t in full_texts]
         resp_pad = pad_2d_list_to_length(full_ids, self.pad_token_id, response_len).to(idx0.device)
 
-       
-
-        # 10. Build prm_reward（不再做 r* 变形）
+        # 10. Build prm_reward（仅此采用 LCF 段奖；其他逻辑不变）
         pr_tensors = []
-        #wu_tensors = []    # ← 新增 817
         for r in padded_ws:
             if len(r) >= response_len:
                 row = r[:response_len]
             else:
                 row = r + [0.0] * (response_len - len(r))
             pr_tensors.append(row)
-        # for w in padded_wu:  # ← 新增 817
-        #     if len(w) >= response_len:
-        #         row_w = w[:response_len]
-        #     else:
-        #         row_w = w + [0.0] * (response_len - len(w))
-        #     wu_tensors.append(row_w)
-
 
         prm_reward = torch.tensor(pr_tensors, device=idx0.device, dtype=torch.float32)
-        #wu         = torch.tensor(wu_tensors, device=idx0.device, dtype=torch.float32)  # [B, L] 817
-
-        # # —— 样本内：按步权重和归一化 —— 
-        # resp_mask_only = get_response_mask(resp_pad, prompts.meta_info["eos_token_id"], wu.dtype)  # [B, L]
-        # den = (wu * resp_mask_only).sum(dim=-1, keepdim=True).clamp_min(1e-6)   # Σ w_t
-        # prm_reward = prm_reward / den
+        seq_gain = torch.tensor(seq_gain_list, device=idx0.device, dtype=torch.float32)  # [Bn]
 
         # 11. Rebuild batch tensors
         Bn = resp_pad.size(0)
@@ -1003,7 +1379,8 @@ class vLLMRollout(BaseRollout):
             "input_ids":      seq,
             "attention_mask": mask,
             "position_ids":   pos,
-            "prm_reward":     prm_reward,
+            "prm_reward":     prm_reward,   # ← 只这部分采用 LCF
+            "seq_gain":       seq_gain,
         }, batch_size=Bn)
 
         # 12. Expand non_tensor_batch
@@ -1021,10 +1398,10 @@ class vLLMRollout(BaseRollout):
         print(f"[DEBUG] resp_pad.shape={resp_pad.shape}, seq.shape={seq.shape}, prm_reward.shape={prm_reward.shape}")
         return DataProto(batch=batch, non_tensor_batch=new_ntb)
 
-    '''#使用adv作为 prm_reward 的值,方差很大
+    '''#prm_reward 只含“最终段”的 avg_logprob，早期推理没被学习到
     @GPUMemoryLogger(role="vllm rollout spmd", logger=logger)
     @torch.no_grad()
-    def generate_sequences(self, prompts: DataProto, **kwargs) -> DataProto:
+    def generate_sequences(self, prompts: DataProto, **kwargs) -> DataProto: 
         # 0. Ensure non_tensor_batch exists and raw_prompt_ids are set
         non_tensor_batch = prompts.non_tensor_batch or {}
         prompts.non_tensor_batch = non_tensor_batch
@@ -1051,8 +1428,22 @@ class vLLMRollout(BaseRollout):
         num_foresight     = int(kwargs.get("num_foresight",        self.config.num_foresight))
         sigma_rate        = float(kwargs.get("sigma_rate",         self.config.sigma_rate))
         temperature       = float(kwargs.get("temperature",        self.config.temperature))
+        cluster_num       = int(kwargs.get("cluster_num",          self.config.cluster_num))
         step_response_len = int(kwargs.get("step_response_length", self.config.step_response_length))
         response_len      = int(kwargs.get("response_length",      self.config.response_length))
+        mix_lambda        = float(kwargs.get("mix_lambda",         self.config.mix_lambda))
+
+        # reward_spread_mode   = str(kwargs.get("reward_spread", "exp"))      # "exp" | "uniform" | "linear"
+        # reward_spread_gamma  = float(kwargs.get("spread_gamma", 0.95))      # 仅对 exp 生效
+        # final_spread_mode    = str(kwargs.get("final_reward_spread", reward_spread_mode))
+        # final_spread_gamma   = float(kwargs.get("final_spread_gamma", reward_spread_gamma))
+
+        # === LCF（只用于 prm_reward）参数 ===
+        lcf_mode    = str(kwargs.get("lcf_mode", "mean"))   # "focal" | "sigmoid" | "mean" = 保留原始均值
+        lcf_gamma   = float(kwargs.get("lcf_gamma", 1.5))
+        lcf_q       = float(kwargs.get("lcf_q", 0.30))       # 分位数（建议训练中退火到 0.15）
+        lcf_lambda  = float(kwargs.get("lcf_lambda", 0.30))  # sigmoid 温度
+        lcf_fallback_zero = bool(kwargs.get("lcf_fallback_zero", True))  # 无低置信时r_hat置0
 
         # 3. Decode prompts
         raw_prompts = self.tokenizer.batch_decode(idx0, skip_special_tokens=True)
@@ -1066,10 +1457,202 @@ class vLLMRollout(BaseRollout):
             stop=["\n", "<end_of_reasoning>"]
         )
 
+        import numpy as np
+        import itertools
+        import torch
+
+        def _stable_softmax(x, T=1.0):
+            x = np.asarray(x, dtype=np.float32)
+            logits = x / max(1e-8, float(T))
+            logits -= logits.max()
+            p = np.exp(logits)
+            s = p.sum()
+            if not np.isfinite(s) or s <= 0:
+                return np.full_like(p, 1.0 / len(p))
+            return p / s
+
+        def _extract_chosen_token_logprobs(one_output) -> list:
+            """
+            从 vLLM 的单个 output 中提取“已选 token”的逐步 logprob。
+            兼容：
+            - one_output.token_logprobs: List[float]
+            - one_output.logprobs: List[Dict[token_id -> Logprob or float]]
+            - one_output.logprobs: List[List[Logprob-like or (id, logprob) 元组]]
+            若无法可靠提取，则用 cumulative_logprob / T 兜底。
+            """
+            import numpy as np
+
+            token_ids = getattr(one_output, "token_ids", None) or []
+            L = len(token_ids)
+            if L == 0:
+                return []
+
+            # 1) 最简单：直接有逐步 logprob 列表
+            tlp = getattr(one_output, "token_logprobs", None)
+            if tlp is not None and len(tlp) == L:
+                # 确保可转为 float
+                out = []
+                for v in tlp:
+                    try:
+                        out.append(float(v))
+                    except Exception:
+                        out.append(float("-10.0"))
+                return out
+
+            # 工具：把各种对象取成 float logprob
+            def _as_float_lp(x):
+                # 直接数值
+                if isinstance(x, (int, float, np.floating)):
+                    return float(x)
+                # vLLM 的 Logprob 类：有 .logprob 字段
+                lp = getattr(x, "logprob", None)
+                if lp is not None:
+                    try:
+                        return float(lp)
+                    except Exception:
+                        pass
+                # 可能是 (token_id, logprob) 或类似二元组
+                if isinstance(x, (list, tuple)) and len(x) >= 2:
+                    try:
+                        return float(x[1])
+                    except Exception:
+                        pass
+                return None
+
+            # 2) 通用：逐步候选的结构
+            lps = getattr(one_output, "logprobs", None)
+            if lps is not None and len(lps) == L:
+                chosen = []
+                for t in range(L):
+                    entry = lps[t]
+                    tok_id = token_ids[t]
+                    lp_val = None
+
+                    if isinstance(entry, dict):
+                        obj = entry.get(tok_id, None)
+                        if obj is not None:
+                            lp_val = _as_float_lp(obj)
+                        # 若没找到精确 token_id，遍历 values，优先匹配 token_id，其次取最大 logprob
+                        if lp_val is None:
+                            best_lp = None
+                            best_lp_val = None
+                            for obj2 in entry.values():
+                                # 若对象带 token_id 且匹配，直接用
+                                cand_id = getattr(obj2, "token_id", None)
+                                cand_lp = _as_float_lp(obj2)
+                                if cand_id == tok_id and cand_lp is not None:
+                                    lp_val = cand_lp
+                                    break
+                                # 否则保留一个最大 cand_lp 作为兜底
+                                if cand_lp is not None and (best_lp is None or cand_lp > best_lp):
+                                    best_lp = cand_lp
+                                    best_lp_val = cand_lp
+                            if lp_val is None and best_lp_val is not None:
+                                lp_val = best_lp_val
+
+                    elif isinstance(entry, (list, tuple)):
+                        # 候选列表：找 token_id 匹配的，否则取最大 logprob
+                        best_lp = None
+                        for obj in entry:
+                            cand_id = getattr(obj, "token_id", None)
+                            cand_lp = _as_float_lp(obj)
+                            if cand_id == tok_id and cand_lp is not None:
+                                lp_val = cand_lp
+                                break
+                            if cand_lp is not None and (best_lp is None or cand_lp > best_lp):
+                                best_lp = cand_lp
+                        if lp_val is None and best_lp is not None:
+                            lp_val = best_lp
+
+                    # 最后兜底：用平均 logprob
+                    if lp_val is None or not np.isfinite(lp_val):
+                        lp_val = float(getattr(one_output, "cumulative_logprob", -10.0)) / (L + 1e-8)
+
+                    chosen.append(float(lp_val))
+                return chosen
+
+            # 3) 最差兜底：均匀平均
+            avg = float(getattr(one_output, "cumulative_logprob", -10.0)) / (L + 1e-8)
+            return [avg] * L
+
+
+        # === LCF：基于逐token logprob 计算 r_hat（只用于 prm_reward）===
+        def _lcf_weighted_mean_from_logprobs(lp_list: list) -> float:
+            """
+            计算 LCF 加权均值（用于 prm_reward）。新增 lcf_mode:
+            - "raw" / "plain" / "none": 不做软掩码，直接返回未加权的 lp 均值
+            - "focal":    w = (1 - p)**gamma
+            - "sigmoid":  w = sigmoid((tau - lp)/lambda)
+
+            返回:
+            float 标量（与旧版一致）
+            """
+            if not lp_list:
+                return 0.0
+
+            lp = np.asarray(lp_list, dtype=np.float32)
+
+            # --- 新增：保留原始 lp 均值 ---
+            if lcf_mode in ("raw", "mean", "none"):
+                return float(lp.mean())
+
+            # --- 原有两种软掩码 ---
+            if lcf_mode == "focal":
+                p = np.clip(np.exp(lp), 1e-6, 1.0 - 1e-6)
+                w = (1.0 - p) ** float(lcf_gamma)
+            elif lcf_mode == "sigmoid":
+                tau = float(np.quantile(lp, lcf_q))
+                w = 1.0 / (1.0 + np.exp((lp - tau) / max(1e-6, float(lcf_lambda))))
+            else:
+                # 未知模式时退化为原始均值（更安全）
+                return float(lp.mean())
+
+            denom = float(w.sum())
+            if denom <= 1e-12:
+                # 没有有效权重时：按你的开关决定返回 0 或原始均值
+                return 0.0 if lcf_fallback_zero else float(lp.mean())
+            return float((w * lp).sum() / denom)
+
+        def _spread_segment_reward(total_reward: float,
+                                L: int,
+                                w: float = 1.0,
+                                mode: str = "exp",        # "exp" | "uniform" | "linear"
+                                gamma: float = 0.95) -> list:
+            """
+            把整段的奖励 total_reward * w 按照指定模式分配到段内 L 个 token 上。
+            返回长度为 L 的 list，且 sum(seg) == total_reward * w。
+            """
+            if L <= 0:
+                return []
+            R = float(total_reward) * max(float(w), 0.0)
+            if mode == "last":
+                # 原始版本：不衰减、不摊分，全部堆到最后一个 token
+                return [0.0] * (L - 1) + [float(R)]
+            if mode == "uniform":
+                v = R / L
+                return [float(v)] * L
+
+            if mode == "linear":
+                coeffs = np.arange(1, L + 1, dtype=np.float32)  # 1,2,...,L
+            else:
+                coeffs = (gamma ** np.arange(L - 1, -1, -1, dtype=np.float32))  # L-1,...,0, exp
+
+            s = float(coeffs.sum())
+            if s <= 1e-12:
+                return [0.0] * L
+            coeffs = coeffs / s
+            return list((R * coeffs).astype(np.float32))
+
         # 5. Initialize beam histories
         prev_steps      = [["" for _ in range(beam_size)] for _ in range(bs0)]
-        prev_values     = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]
-        weights_history = [[[] for _ in range(beam_size)] for _ in range(bs0)]
+        prev_values     = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]  # 平均logprob基线（保持原样）
+        weights_history = [[[] for _ in range(beam_size)] for _ in range(bs0)]   # 存每段最后token的“奖励脉冲”
+        prev_gains      = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]
+        gain_history    = [[[] for _ in range(beam_size)] for _ in range(bs0)]  # 记录每条beam的step-gain轨迹
+
+        # --- 放在 num_foresight 外层超参里（可选开关与打印频率） ---
+        debug_prune = bool(kwargs.get("debug_prune", True))
+        debug_prune_every = int(kwargs.get("debug_prune_every", 1))  # 每多少个 depth 打一次
 
         # 6. Multi-step foresight
         for depth in range(num_foresight):
@@ -1091,75 +1674,152 @@ class vLLMRollout(BaseRollout):
                 use_tqdm=False
             )
 
-            all_resp, all_lp, all_adv = [], [], []
+            all_resp, all_lp, all_rhat = [], [], []  # === 新增 all_rhat：仅用于 prm_reward ===
             for out in outs:
                 for o in out.outputs:
                     txt = o.text.strip()
-                    lp  = o.cumulative_logprob / (len(o.token_ids) + 1e-8)
+                    lp  = o.cumulative_logprob / (len(o.token_ids) + 1e-8)  # 平均logprob（用于搜索/剪枝/adv）
+                    # === 仅用于 prm_reward 的 r_hat ===
+                    lp_list = _extract_chosen_token_logprobs(o)
+                    r_hat   = _lcf_weighted_mean_from_logprobs(lp_list)
+
                     all_resp.append(txt)
                     all_lp.append(lp)
+                    all_rhat.append(r_hat)
 
-            # compute advantage per beam rollout
+            # compute advantage per beam rollout（仍基于 lp 与 prev_values）
+            all_adv = []
             for b in range(bs0):
                 for k in range(beam_size):
                     start = (b * beam_size + k) * num_rollout
                     prev_v = prev_values[b][k]
                     for j in range(num_rollout):
-                        all_adv.append(all_lp[start + j] - prev_v)
+                        all_adv.append(all_lp[start + j] - prev_v)  # 动态增益（不改）
 
-            new_steps = [["" for _ in range(beam_size)] for _ in range(bs0)]
-            new_values = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]
+            new_steps   = [["" for _ in range(beam_size)] for _ in range(bs0)]
+            new_values  = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]
             new_weights = [[[] for _ in range(beam_size)] for _ in range(bs0)]
+            new_gains   = [[0.0 for _ in range(beam_size)] for _ in range(bs0)]
+            new_gain_history  = [[[] for _ in range(beam_size)] for _ in range(bs0)]
 
+            # === Debug 累计器（本 depth 内聚合） ===
+            kept_pre_cnt = 0      # 剪枝前保留数量（按阈）
+            kept_post_cnt = 0     # 补足后保留数量
+            total_cnt = 0         # 总候选数
+            supplemented_cnt = 0  # 通过 softmax pool 补上的个数
+            ########################################
             for b in range(bs0):
                 start = b * beam_size * num_rollout
-                lp_slice  = np.array(all_lp[start:start + beam_size * num_rollout])
-                adv_slice = np.array(all_adv[start:start + beam_size * num_rollout])
-                resp_slice= all_resp[start:start + beam_size * num_rollout]
+                end   = start + beam_size * num_rollout
+                lp_slice   = np.array(all_lp[start:end],    dtype=np.float32)  # 仍用 lp 做筛选/打分
+                adv_slice  = np.array(all_adv[start:end],   dtype=np.float32)
+                rhat_slice = np.array(all_rhat[start:end],  dtype=np.float32)  # 仅用于 prm_reward
+                resp_slice = all_resp[start:end]
 
-                mu, sigma = adv_slice.mean(), adv_slice.std()
-                keep = [i for i,v in enumerate(adv_slice) if v > mu - sigma_rate * sigma]
-                if len(keep) < beam_size:
-                    wts = np.exp(adv_slice / temperature)
-                    wts /= wts.sum()
-                    extra = list(np.random.choice(
-                        len(adv_slice), beam_size - len(keep), replace=False, p=wts
-                    ))
-                    keep += extra
-                keep.sort()
+                # low-sigma width pruning（用 lp_slice）
+                mu, sigma = float(lp_slice.mean()), float(lp_slice.std())
+                keep = [i for i, v in enumerate(lp_slice) if v > mu - sigma_rate * sigma]
+                keep_num = list(keep)  # 拷贝一份再做补足
+                # --- 统计（剪枝前） ---
+                N = len(lp_slice)
+                total_cnt += N
+                kept_pre_cnt += len(keep)
 
-                adv_k = adv_slice[keep]
-                comb_w = softmax(adv_k / temperature)
-                sel   = np.random.choice(len(keep), size=beam_size, replace=False, p=comb_w)
+                if len(keep) < beam_size: # 按照绝对似然补足
+                    pool = np.setdiff1d(np.arange(len(lp_slice)), np.array(keep), assume_unique=False)
+                    if len(pool) > 0:
+                        p_pool = _stable_softmax(lp_slice[pool], temperature)
+                        extra = np.random.choice(pool, beam_size - len(keep), replace=False, p=p_pool).tolist()
+                        keep += extra
+                        # --- 统计（补足数量） ---
+                        supplemented_cnt += len(extra)
+                # --- 统计（补足后） ---
+                kept_post_cnt += len(keep)
 
+
+                # 取分数（保持原来的混合 zscore 逻辑）
+                abs_k = lp_slice[keep]        # 平均 log-prob (可负)
+                adv_k = adv_slice[keep]       # 动态优势 (可正可负)
+
+                def zscore(x, eps=1e-8):
+                    return (x - x.mean()) / (x.std() + eps)
+
+                z_abs  = zscore(abs_k)
+                z_gain = zscore(adv_k)
+
+                w_raw  = 1.0 / (1.0 + np.exp(-z_gain / 1.0))   # = sigmoid(z_gain)
+                tau_abs  = float(kwargs.get("tau_abs",  temperature))
+                tau_gain = float(kwargs.get("tau_gain", temperature))
+                lam = float(kwargs.get("mix_lambda", 0.6))
+
+                logits = lam * (z_abs / tau_abs) + (1 - lam) * (z_gain / tau_gain)
+                combined = _stable_softmax(logits, temperature)
+                sel = np.random.choice(len(keep), size=beam_size, replace=False, p=combined)
+
+                # 更新
                 for k_idx, sel_idx in enumerate(sel):
                     origin = keep[sel_idx] // num_rollout
-                    resp = resp_slice[keep[sel_idx]]
-                    raw_adv = float(adv_slice[keep[sel_idx]])
+                    resp   = resp_slice[keep[sel_idx]]
+                    p_sel  = float(combined[sel_idx])   # 仅调试可用
+
                     tok_ids = self.inference_engine.llm_engine.tokenizer.encode(
                         resp, add_special_tokens=False
                     )
-                    rep_adv = [0.0] * len(tok_ids)
-                    #rep_adv =  [0.0] * (len(tok_ids)-1) + [raw_adv] # last token is the response token
 
-                    new_weights[b][k_idx] = weights_history[b][origin] + rep_adv
+                    # === 仅 prm_reward 使用 r_hat 作为段奖 ===
+                    step_reward = float(rhat_slice[keep[sel_idx]])  # LCF r_hat
+                    # 段末脉冲（保持你原本对齐方式）；若要分摊，可改用 _spread_segment_reward
+                    seg = [0.0] * (len(tok_ids) - 1) + [step_reward]
+
+                    new_weights[b][k_idx] = weights_history[b][origin] + seg
                     new_steps[b][k_idx]   = prev_steps[b][origin] + resp + "\n"
-                    new_values[b][k_idx]  = lp_slice[keep[sel_idx]]
+                    new_values[b][k_idx]  = float(lp_slice[keep[sel_idx]])   # 仍用 lp 更新基线
+                    new_gains[b][k_idx]   = float(adv_slice[keep[sel_idx]])  # 保存差分增益
+                    new_gain_history[b][k_idx] = gain_history[b][origin] + [float(adv_slice[keep[sel_idx]])]
 
             prev_steps, prev_values, weights_history = new_steps, new_values, new_weights
+            prev_gains = new_gains  # 更新增益
+            gain_history = new_gain_history
 
-        # 7. Final answer generation and collect raw_adv
-        final_prompts, history_list, final_ws, final_raw_adv = [], [], [], []
+            # === depth 级别的调试输出（可按 debug_prune_every 控制频率） ===
+            if debug_prune and (depth % max(1, debug_prune_every) == 0):
+                ratio_pre  = (kept_pre_cnt  / total_cnt) if total_cnt > 0 else 0.0
+                ratio_post = (kept_post_cnt / total_cnt) if total_cnt > 0 else 0.0
+                print(f"[PRUNE-DEBUG] depth={depth} "
+                    f"keep_pre={kept_pre_cnt}/{total_cnt} ({ratio_pre:.2%}), "
+                    f"keep_post={kept_post_cnt}/{total_cnt} ({ratio_post:.2%}), "
+                    f"supplemented={supplemented_cnt}, "
+                    f"beam_size={beam_size}, num_rollout={num_rollout}")
+
+        # 7. Final answer generation — 用 prev_values 的 abs+gain 计算 combined 采样 beam，并写入其概率
+        final_prompts, history_list, final_ws, final_probs = [], [], [], []
+        final_gain_hists, seq_gain_list = [], [] 
         for b in range(bs0):
-            vals = np.array(prev_values[b])
-            adv  = vals - vals.mean()
-            probs= np.exp(adv / temperature)
-            probs/= probs.sum()
-            choice = int(np.random.choice(len(probs), p=probs))
+            L = np.array(prev_values[b], dtype=np.float32)  # 平均 logprob（绝对置信度）
+            G = np.array(prev_gains[b],  dtype=np.float32)  # 真正的动态增益
+
+            def zscore(x, eps=1e-8):
+                s = x.std()
+                return (x - x.mean()) / (s + eps)
+
+            zL = zscore(L)
+            zG = zscore(G)  
+
+            tau_abs  = float(kwargs.get("tau_abs",  temperature))
+            tau_gain = float(kwargs.get("tau_gain", temperature))
+            lam      = float(kwargs.get("mix_lambda", 0.6))
+
+            logits = lam * (zL / tau_abs) + (1.0 - lam) * (zG / tau_gain)
+            combined_beam = _stable_softmax(logits, temperature)
+
+            # 采样
+            choice   = int(np.random.choice(len(combined_beam), p=combined_beam))
+            p_choice = float(combined_beam[choice])  # 被选中的组合概率
 
             history_list.append(prev_steps[b][choice])
             final_ws.append(weights_history[b][choice])
-            final_raw_adv.append(float(adv[choice]))
+            final_probs.append(p_choice)
+            final_gain_hists.append(gain_history[b][choice])
 
             prompt_txt = (
                 f"User: {raw_prompts[b].strip()}\n"
@@ -1167,11 +1827,12 @@ class vLLMRollout(BaseRollout):
             )
             ids = self.tokenizer.encode(prompt_txt, add_special_tokens=False)
             final_prompts.append({"prompt_token_ids": ids})
+        
 
         # 8. Generate final sequences
         final_sp = SamplingParams(
             max_tokens=response_len,
-            logprobs=1,
+            logprobs=1,                # 必须开，后面要用 logprob
             temperature=temperature,
             n=1,
             stop=["<end_of_reasoning>"]
@@ -1182,49 +1843,98 @@ class vLLMRollout(BaseRollout):
             use_tqdm=False
         )
 
-        # 9. Parse final outputs and pad with respective raw_adv
+        import numpy as np
+        ############# seq gain 计算函数 #############
+        ############# 越稳越好 ####################
+        def _seq_gain_pos_neg(
+            gh,
+            w_pos=1.0,         # 正增益权重：鼓励稳定上升
+            w_neg=1.0,         # 负增益权重：显式惩罚回撤（>= w_pos 会更保守）
+            var_coef=0.10,     # 振荡惩罚（对 gain 方差的系数）
+            dd_coef=0.15,      # （可选）回撤面积惩罚：抑制“先跌后涨”
+            second_diff_coef=0.0,  # （可选）二阶差分（加速度）的方差惩罚，进一步抑制抖动
+        ):
+            """
+            gh: list[float]，每步 gain = φ_t - φ_{t-1}（φ=mean logprob）
+            返回：一个单调反映“越稳越好”的标量，供 compute_grpo_outcome_advantage 做组内 z-score + 映射
+            """
+            if len(gh) == 0:
+                return 0.0
+
+            gh = np.asarray(gh, dtype=np.float32)
+
+            # 1) 正/负增益分解
+            pos = float(np.sum(np.clip(gh,  0.0, None)))
+            neg = float(np.sum(np.clip(-gh, 0.0, None)))
+
+            # 2) 振荡惩罚（方差）
+            var_pen = float(np.var(gh)) if gh.size > 1 else 0.0
+
+            # 3) （可选）回撤面积惩罚：对累计轨迹 φ 的“低于历史峰值”的面积做惩罚
+            #    这能抑制“先刻意跌、再猛涨”的刷分行为
+            phi = np.cumsum(gh)                 # φ_t - φ_0
+            peak = np.maximum.accumulate(phi)   # 历史峰值
+            drawdown = np.maximum(0.0, peak - phi)
+            dd_area = float(np.sum(drawdown))   # 回撤面积
+
+            # 4) （可选）二阶差分方差：进一步抑制高频抖动（默认关）
+            if second_diff_coef > 0.0 and gh.size > 2:
+                second_diff_var = float(np.var(np.diff(gh, n=2)))
+            else:
+                second_diff_var = 0.0
+
+            score = (w_pos * pos
+                    - w_neg * neg
+                    - var_coef * var_pen
+                    - dd_coef * dd_area
+                    - second_diff_coef * second_diff_var)
+            return score
+
+
+        # 9. Parse final outputs；在最终段落的最后一个 token 写入 LCF r_hat_final
         full_texts, padded_ws = [], []
         for i, out in enumerate(final_outs):
-            gen = out.outputs[0].text.strip()
-            full= history_list[i] + gen
+            o = out.outputs[0]
+            gen = o.text.strip()
+            full = history_list[i] + gen
             full_texts.append(full)
             tok_ids = self.tokenizer.encode(gen, add_special_tokens=False)
-            prob = final_raw_adv[i]
-            segment_reward = [0.0] * (len(tok_ids) - 1) + [prob]
-            #padded_ws.append(final_ws[i] + [final_raw_adv[i]] * len(tok_ids))
-            padded_ws.append(final_ws[i] + segment_reward)
+
+            # === 仅 prm_reward：最后段落用软掩码 r_hat_final ===
+            lp_list = _extract_chosen_token_logprobs(o)
+            r_hat_final = _lcf_weighted_mean_from_logprobs(lp_list)
+            seg = [0.0] * (len(tok_ids) - 1) + [r_hat_final]
+
+            padded_ws.append(final_ws[i] + seg)
+
+            gh = final_gain_hists[i]
+            sg = _seq_gain_pos_neg(
+                gh,
+                w_pos=1.0,
+                w_neg=1.0,       # 想更保守可设 1.2~1.5
+                var_coef=0.10,   # 0.05~0.15 常用
+                dd_coef=0.15,    # 0.10~0.30 常用；更重视“别回撤”就调大
+                second_diff_coef=0.0  # 如仍抖可设 0.02~0.05
+            ) if len(gh) > 0 else 0.0
+            seq_gain_list.append(float(sg))
+            #seq_gain_list.append(float(np.mean(gh)) if len(gh) > 0 else 0.0) # 求gain均值（旧版）
 
         full_ids = [self.tokenizer.encode(t, add_special_tokens=False) for t in full_texts]
-        resp_pad= pad_2d_list_to_length(full_ids, self.pad_token_id, response_len).to(idx0.device)
+        resp_pad = pad_2d_list_to_length(full_ids, self.pad_token_id, response_len).to(idx0.device)
 
-        # —— 8. 构建 prm_reward 张量 ——
-        # 使得 prm_reward 的每行长度与 resp_padded 的响应长度一致 (response_len)
+        # 10. Build prm_reward（仅此采用 LCF 段奖；其他逻辑不变）
         pr_tensors = []
         for r in padded_ws:
-            # 截断或补齐到 response_len
             if len(r) >= response_len:
                 row = r[:response_len]
             else:
                 row = r + [0.0] * (response_len - len(r))
             pr_tensors.append(row)
-        prm_reward = torch.tensor(pr_tensors, device=idx0.device)
 
-        
-        # # ####neu reward 这样计算导致reward过小, 有重复softmax的嫌疑
-        # # # 按公式算权重：w_i = exp(-r_i/T) / sum_j exp(-r_j/T)
-        # r = prm_reward
-        # T = temperature 
-        # exp_neg = torch.exp(-r / T)           # [Bn, L]
-        # den = exp_neg.sum(dim=1, keepdim=True)  # [Bn, 1]
-        # w = exp_neg / den                       # [Bn, L]
+        prm_reward = torch.tensor(pr_tensors, device=idx0.device, dtype=torch.float32)
+        seq_gain = torch.tensor(seq_gain_list, device=idx0.device, dtype=torch.float32)  # [Bn]
 
-        # # 4) 最终 r*_i = w_i * r_i
-        # r_star = w * r                          # [Bn, L]
-
-        # # 5) 用 r_star 作为 prm_reward
-        # prm_reward = r_star
-
-        # 10. Rebuild batch tensors
+        # 11. Rebuild batch tensors
         Bn = resp_pad.size(0)
         repeat = Bn // bs0
         idx   = idx0.repeat_interleave(repeat, dim=0)
@@ -1243,15 +1953,13 @@ class vLLMRollout(BaseRollout):
             "input_ids":      seq,
             "attention_mask": mask,
             "position_ids":   pos,
-            "prm_reward":     prm_reward,
+            "prm_reward":     prm_reward,   # ← 只这部分采用 LCF
+            "seq_gain":       seq_gain,
         }, batch_size=Bn)
-        # Debugging information
-        print(f"[DEBUG] resp_padded.shape: {resp_pad.shape}")####check resp_padded shape
-        print(f"[DEBUG] prm_reward.shape: {prm_reward.shape}")####check prm_reward shape
-        print(f"[DEBUG] prm_reward[0]: {prm_reward[0]}")####check prm_reward[0]
-        # 11. Expand non_tensor_batch
+
+        # 12. Expand non_tensor_batch
         new_ntb = {}
-        for k,v in non_tensor_batch.items():
+        for k, v in non_tensor_batch.items():
             if isinstance(v, list):
                 new_ntb[k] = list(itertools.chain.from_iterable([v] * repeat))
             elif isinstance(v, np.ndarray):
@@ -1261,9 +1969,9 @@ class vLLMRollout(BaseRollout):
             else:
                 new_ntb[k] = [v] * Bn
 
-        print(f"[DEBUG] resp_pad.shape={resp_pad.shape}, seq.shape={seq.shape}")
-
-        return DataProto(batch=batch, non_tensor_batch=new_ntb)'''
+        print(f"[DEBUG] resp_pad.shape={resp_pad.shape}, seq.shape={seq.shape}, prm_reward.shape={prm_reward.shape}")
+        return DataProto(batch=batch, non_tensor_batch=new_ntb)
+'''
 
 
 
