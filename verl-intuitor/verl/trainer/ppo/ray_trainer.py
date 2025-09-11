@@ -266,7 +266,27 @@ def compute_advantage(
         seq_gain = data.batch['seq_gain']  # tx_add seq_gain
         print(f"[DEBUG] token_level_rewards_in_grpo_adv shape = {token_level_rewards.shape}"
               f" values = {token_level_rewards[0].detach().cpu().tolist()}")
+
+        # self_certaintys = data.batch['token_level_rewards'] #data.batch["self_certaintys"]
+        # print(f"[DEBUG] self_certaintys shape = {self_certaintys.shape}, values = {self_certaintys[0].detach().cpu().tolist()}")
+        # grpo_calculation_mask = data.batch["response_mask"]
+        
+        # grpo_calculation_mask = grpo_calculation_mask.to(self_certaintys.dtype)
+
+        # sentence_wise_mean = masked_mean(
+        #     self_certaintys.detach(), mask=grpo_calculation_mask, axis=-1
+        # )
+
+        # lengths = grpo_calculation_mask.sum(dim=-1).long()
+        # eos_mask_id =  lengths - 1
+        # token_level_rewards = torch.zeros_like(self_certaintys)
+        # token_level_rewards.scatter_(
+        #     -1, eos_mask_id.unsqueeze(-1), sentence_wise_mean.unsqueeze(-1)
+        # )
+        # print(f"[DEBUG] token_level_rewards_in_intuitor_adv shape = {token_level_rewards.shape}"
+        #       f" values = {token_level_rewards[0].detach().cpu().tolist()}")
         # Call compute_grpo_outcome_advantage with parameters matching its definition
+        
         advantages, returns = core_algos.compute_grpo_outcome_advantage(
             token_level_rewards=data.batch["token_level_rewards"],
             response_mask=grpo_calculation_mask,
@@ -281,6 +301,8 @@ def compute_advantage(
         data.batch["advantages"] = advantages
         print(f"[DEBUG] grpo_advantages[0] shape = {advantages[0].shape}, values = {advantages[0].detach().cpu().tolist()}")
         data.batch["returns"] = returns
+        
+        
     elif adv_estimator == AdvantageEstimator.INTUITOR:
         self_certaintys = data.batch["self_certaintys"]
         print(f"[DEBUG] self_certaintys shape = {self_certaintys.shape}, values = {self_certaintys[0].detach().cpu().tolist()}")
