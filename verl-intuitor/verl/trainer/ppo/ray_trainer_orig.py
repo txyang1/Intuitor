@@ -262,9 +262,6 @@ def compute_advantage(
     elif adv_estimator == AdvantageEstimator.GRPO:
         # Initialize the mask for GRPO calculation
         grpo_calculation_mask = data.batch["response_mask"]
-        token_level_rewards = data.batch['token_level_rewards']
-        print(f"[DEBUG] token_level_rewards_in_grpo_adv shape = {token_level_rewards.shape}"
-              f" values = {token_level_rewards[0].detach().cpu().tolist()}")
         # Call compute_grpo_outcome_advantage with parameters matching its definition
         advantages, returns = core_algos.compute_grpo_outcome_advantage(
             token_level_rewards=data.batch["token_level_rewards"],
@@ -273,11 +270,9 @@ def compute_advantage(
             norm_adv_by_std_in_grpo=norm_adv_by_std_in_grpo,
         )
         data.batch["advantages"] = advantages
-        print(f"[DEBUG] grpo_advantages[0] shape = {advantages[0].shape}, values = {advantages[0].detach().cpu().tolist()}")
         data.batch["returns"] = returns
     elif adv_estimator == AdvantageEstimator.INTUITOR:
         self_certaintys = data.batch["self_certaintys"]
-        print(f"[DEBUG] self_certaintys shape = {self_certaintys.shape}, values = {self_certaintys[0].detach().cpu().tolist()}")
         grpo_calculation_mask = data.batch["response_mask"]
         
         grpo_calculation_mask = grpo_calculation_mask.to(self_certaintys.dtype)
@@ -292,8 +287,7 @@ def compute_advantage(
         token_level_rewards.scatter_(
             -1, eos_mask_id.unsqueeze(-1), sentence_wise_mean.unsqueeze(-1)
         )
-        print(f"[DEBUG] token_level_rewards_in_intuitor_adv shape = {token_level_rewards.shape}"
-              f" values = {token_level_rewards[0].detach().cpu().tolist()}")
+
         advantages, returns = core_algos.compute_grpo_outcome_advantage(
             token_level_rewards=token_level_rewards,
             response_mask=grpo_calculation_mask,
@@ -301,7 +295,6 @@ def compute_advantage(
             norm_adv_by_std_in_grpo=norm_adv_by_std_in_grpo,
         )
         data.batch["advantages"] = advantages
-        print(f"[DEBUG] intuitor_advantages[0] shape = {advantages[0].shape}, values = {advantages[0].detach().cpu().tolist()}")
         data.batch["returns"] = returns
     else:
         # handle all other adv estimator type other than GAE and GRPO
@@ -322,7 +315,7 @@ def compute_advantage(
         data.batch["returns"] = returns
     return data
 
-#prm_reward改进版
+
 class RayPPOTrainer:
     """Distributed PPO trainer using Ray for scalable reinforcement learning.
 
@@ -385,7 +378,7 @@ class RayPPOTrainer:
         self.role_worker_mapping = role_worker_mapping
         self.resource_pool_manager = resource_pool_manager
         self.use_reference_policy = Role.RefPolicy in role_worker_mapping
-        #self.use_rm = Role.RewardModel in role_worker_mapping
+        self.use_rm = Role.RewardModel in role_worker_mapping
         self.ray_worker_group_cls = ray_worker_group_cls
         self.device_name = device_name
         self.validation_generations_logger = ValidationGenerationsLogger()
@@ -903,12 +896,12 @@ class RayPPOTrainer:
             )
             self.resource_pool_to_cls[resource_pool]["ref"] = ref_policy_cls
 
-        # # create a reward model if reward_fn is None
-        # if self.use_rm:
-        #     # we create a RM here
-        #     resource_pool = self.resource_pool_manager.get_resource_pool(Role.RewardModel)
-        #     rm_cls = RayClassWithInitArgs(self.role_worker_mapping[Role.RewardModel], config=self.config.reward_model)
-        #     self.resource_pool_to_cls[resource_pool]["rm"] = rm_cls
+        # create a reward model if reward_fn is None
+        if self.use_rm:
+            # we create a RM here
+            resource_pool = self.resource_pool_manager.get_resource_pool(Role.RewardModel)
+            rm_cls = RayClassWithInitArgs(self.role_worker_mapping[Role.RewardModel], config=self.config.reward_model)
+            self.resource_pool_to_cls[resource_pool]["rm"] = rm_cls
 
         # initialize WorkerGroup
         # NOTE: if you want to use a different resource pool for each role, which can support different parallel size,
@@ -947,9 +940,9 @@ class RayPPOTrainer:
             self.ref_policy_wg = all_wg["ref"]
             self.ref_policy_wg.init_model()
 
-        # if self.use_rm:
-        #     self.rm_wg = all_wg["rm"]
-        #     self.rm_wg.init_model()
+        if self.use_rm:
+            self.rm_wg = all_wg["rm"]
+            self.rm_wg.init_model()
 
         # we should create rollout at the end so that vllm can have a better estimation of kv cache memory
         self.actor_rollout_wg = all_wg["actor_rollout"]
@@ -1152,8 +1145,8 @@ class RayPPOTrainer:
                         self.ref_policy_wg.start_profile()
                     if self.use_critic:
                         self.critic_wg.start_profile()
-                    # if self.use_rm:
-                    #     self.rm_wg.start_profile()
+                    if self.use_rm:
+                        self.rm_wg.start_profile()
 
                 metrics = {}
                 timing_raw = {}
@@ -1219,9 +1212,6 @@ class RayPPOTrainer:
                     batch = batch.repeat(repeat_times=self.config.actor_rollout_ref.rollout.n, interleave=True)
                     batch = batch.union(gen_batch_output)
 
-                    prm = gen_batch_output.batch['prm_reward']  # tx_add prm_reward
-                    batch.batch['token_level_scores'] = prm #tx_add 如果使用phi+prm_reward#################################
-
                     if "response_mask" not in batch.batch:
                         batch.batch["response_mask"] = compute_response_mask(batch)
                     # Balance the number of valid tokens across DP ranks.
@@ -1236,10 +1226,10 @@ class RayPPOTrainer:
                     batch.meta_info["global_token_num"] = torch.sum(batch.batch["attention_mask"], dim=-1).tolist()
 
                     with marked_timer("reward", timing_raw, color="yellow"):
-                        # # compute reward model score
-                        # if self.use_rm:
-                        #     reward_tensor = self.rm_wg.compute_rm_score(batch)
-                        #     batch = batch.union(reward_tensor)
+                        # compute reward model score
+                        if self.use_rm:
+                            reward_tensor = self.rm_wg.compute_rm_score(batch)
+                            batch = batch.union(reward_tensor)
 
                         if self.config.reward_model.launch_reward_fn_async:
                             future_reward = compute_reward_async.remote(batch, self.config, self.tokenizer)
@@ -1291,25 +1281,22 @@ class RayPPOTrainer:
                                 ref_log_prob = self.actor_rollout_wg.compute_ref_log_prob(batch)
                             batch = batch.union(ref_log_prob)
 
-                    # # compute values
-                    # if self.use_critic:
-                    #     with marked_timer("values", timing_raw, color="cyan"):
-                    #         values = self.critic_wg.compute_values(batch)
-                    #         batch = batch.union(values)
+                    # compute values
+                    if self.use_critic:
+                        with marked_timer("values", timing_raw, color="cyan"):
+                            values = self.critic_wg.compute_values(batch)
+                            batch = batch.union(values)
 
                     with marked_timer("adv", timing_raw, color="brown"):
-                        # # we combine with rule-based rm
-                        # reward_extra_infos_dict: dict[str, list]
-                        # if self.config.reward_model.launch_reward_fn_async:
-                        #     reward_tensor, reward_extra_infos_dict = ray.get(future_reward)
-                        # batch.batch["token_level_scores"] = reward_tensor
+                        # we combine with rule-based rm
+                        reward_extra_infos_dict: dict[str, list]
+                        if self.config.reward_model.launch_reward_fn_async:
+                            reward_tensor, reward_extra_infos_dict = ray.get(future_reward)
+                        batch.batch["token_level_scores"] = reward_tensor
 
-                        # if reward_extra_infos_dict:
-                        #     batch.non_tensor_batch.update({k: np.array(v) for k, v in reward_extra_infos_dict.items()})
+                        if reward_extra_infos_dict:
+                            batch.non_tensor_batch.update({k: np.array(v) for k, v in reward_extra_infos_dict.items()})
 
-                        token_level_scores = batch.batch['token_level_scores']
-                        batch.batch['token_level_scores'] = token_level_scores
-                        print(f"token_level_scores: {token_level_scores.shape}, {token_level_scores.dtype}")
                         # compute rewards. apply_kl_penalty if available
                         if self.config.algorithm.use_kl_in_reward:
                             batch, kl_metrics = apply_kl_penalty(
@@ -1335,12 +1322,12 @@ class RayPPOTrainer:
                             config=self.config.algorithm,
                         )
 
-                    # # update critic
-                    # if self.use_critic:
-                    #     with marked_timer("update_critic", timing_raw, color="pink"):
-                    #         critic_output = self.critic_wg.update_critic(batch)
-                    #     critic_output_metrics = reduce_metrics(critic_output.meta_info["metrics"])
-                    #     metrics.update(critic_output_metrics)
+                    # update critic
+                    if self.use_critic:
+                        with marked_timer("update_critic", timing_raw, color="pink"):
+                            critic_output = self.critic_wg.update_critic(batch)
+                        critic_output_metrics = reduce_metrics(critic_output.meta_info["metrics"])
+                        metrics.update(critic_output_metrics)
 
                     # implement critic warmup
                     if self.config.trainer.critic_warmup <= self.global_steps:
@@ -1433,8 +1420,8 @@ class RayPPOTrainer:
                         self.ref_policy_wg.stop_profile()
                     if self.use_critic:
                         self.critic_wg.stop_profile()
-                    # if self.use_rm:
-                    #     self.rm_wg.stop_profile()
+                    if self.use_rm:
+                        self.rm_wg.stop_profile()
 
                 if is_last_step:
                     pprint(f"Final validation metrics: {last_val_metrics}")
